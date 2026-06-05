@@ -1,0 +1,489 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Comcare Mpc Dashboard",
+  "schemaVersion": 1,
+  "description": "Comcare MPC Dashboard (Jonathan Saw): case timeline (add/remove events), MPC review status, leave runway to LWOP (accruals + SA public holidays + Dec close-down), NWE with vs without posting allowance if Comcare accepts liability, and net return after verified Slater & Gordon fixed fees. Inputs, added events and notes persist in the browser; export/import JSON to back up."
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comcare & MPC Dashboard · J. Saw</title>
+<style>
+:root{
+  --navy:#14213d;--bg:#eef1f5;--surface:#fff;--surface2:#f6f8fb;
+  --ink:#16202e;--ink2:#51607a;--ink3:#7b8aa3;--line:#dce2ec;--line2:#c7d0de;
+  --a:#3a6ea5;--b:#c06b3e;--pos:#2f7d56;--neg:#b23b3b;--warn:#9a6b00;--purple:#6c5aa8;--accent:#3a6ea5;
+  --r:10px;--rlg:14px;--shadow:0 1px 2px rgba(16,32,54,.06),0 2px 8px rgba(16,32,54,.05);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0e1422;--surface:#161f30;--surface2:#1c2740;--ink:#e8edf5;--ink2:#a7b4c9;--ink3:#7e8da6;
+  --line:#293449;--line2:#36425b;--a:#6ea3d8;--b:#e0966a;--pos:#5cc08a;--neg:#e2776f;--warn:#d4a034;--purple:#a99be4;--accent:#6ea3d8;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.25);}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 18px 44px}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:4px}
+.head{background:var(--navy);color:#fff;border-radius:var(--rlg);padding:22px 26px;margin-bottom:18px;box-shadow:var(--shadow)}
+.head .eyebrow{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:#9fb4d6;font-weight:700}
+.head h1{font-size:22px;font-weight:600;margin-top:5px;letter-spacing:-.3px}
+.head .sub{font-size:13px;color:#b9c6dd;margin-top:6px;max-width:880px}
+.alert{margin-top:13px;background:rgba(58,110,165,.18);border:1px solid rgba(159,180,214,.35);color:#dde7f6;font-size:12.5px;padding:10px 14px;border-radius:10px}
+.section{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3);margin:26px 4px 11px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--rlg);padding:18px 20px;box-shadow:var(--shadow)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px}
+.ctl label,.ctl .lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
+.ctl input,.ctl select{width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink);font:13px/1.2 inherit;font-variant-numeric:tabular-nums}
+.seg{display:flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:var(--surface2)}
+.seg button{flex:1;border:none;background:transparent;padding:8px 6px;font-size:12px;cursor:pointer;color:var(--ink2)}
+.seg button.on{background:var(--accent);color:#fff;font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:13px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:var(--r);padding:15px 17px;box-shadow:var(--shadow)}
+.kpi.a{border-left-color:var(--a)}.kpi.b{border-left-color:var(--b)}.kpi.pos{border-left-color:var(--pos)}.kpi.neg{border-left-color:var(--neg)}.kpi.warn{border-left-color:var(--warn)}.kpi.pp{border-left-color:var(--purple)}
+.kpi .l{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+.kpi .v{font-size:24px;font-weight:700;margin-top:5px;letter-spacing:-.4px}
+.kpi.a .v{color:var(--a)}.kpi.b .v{color:var(--b)}.kpi.pos .v{color:var(--pos)}.kpi.neg .v{color:var(--neg)}.kpi.pp .v{color:var(--purple)}
+.kpi .s{font-size:11.5px;color:var(--ink3);margin-top:3px}
+.barrow{display:grid;grid-template-columns:130px 1fr 150px;gap:12px;align-items:center;margin:10px 0}
+.barrow .nm{font-size:12.5px;font-weight:600}
+.bar{height:18px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.fill{height:100%;border-radius:999px}
+.fill.p{background:var(--a)}.fill.l{background:var(--purple)}.fill.an{background:var(--pos)}
+.barrow .dt{font-size:12px;color:var(--ink2);text-align:right}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink2);border-bottom:2px solid var(--line2);font-weight:700}
+tbody tr:hover{background:var(--surface2)}
+tfoot td{font-weight:700;border-top:2px solid var(--line2)}
+.pill{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;background:rgba(108,90,168,.16);color:var(--purple)}
+.note{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r);padding:12px 15px;font-size:12px;color:var(--ink2);margin-top:13px;line-height:1.6}
+.note b{color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.foot{font-size:12px;color:var(--ink3);text-align:center;padding:18px 0 4px}
+.tl-item{position:relative;padding:0 0 15px 24px;border-left:2px solid var(--line)}
+.tl-item:last-child{border-left-color:transparent}
+.tl-dot{position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--surface)}
+.tl-dot.ring{box-shadow:0 0 0 3px rgba(178,59,59,.22)}
+.tl-date{font-size:11.5px;font-weight:700;color:var(--ink2)}
+.tl-title{font-size:13.5px;margin-top:1px}.tl-future .tl-title{color:var(--ink2)}
+.tl-src{font-size:11px;color:var(--ink3)}
+.tl-today{font-size:11px;font-weight:700;color:var(--neg);margin:2px 0 8px 24px;letter-spacing:.3px}
+.tlp{border:1px solid var(--line2);border-radius:999px;padding:4px 11px;font-size:11.5px;cursor:pointer;background:var(--surface);color:var(--ink2);font-weight:600}
+.tlp.on{color:#fff;border-color:transparent}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cmp .firm{border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;background:var(--surface2)}
+.cmp .firm h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.cmp .firm .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:999px;display:inline-block;margin-bottom:10px}
+.cmp .firm.wb{border-left:3px solid var(--a)}.cmp .firm.sg{border-left:3px solid var(--purple)}
+.cmp dl{display:grid;grid-template-columns:118px 1fr;gap:6px 10px;font-size:12.5px;margin:0}
+.cmp dt{color:var(--ink2);font-weight:700}
+.cmp dd{margin:0;color:var(--ink)}
+.flag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px}
+.flag.good{background:rgba(47,125,86,.16);color:var(--pos)}
+.flag.bad{background:rgba(178,59,59,.15);color:var(--neg)}
+.flag.unk{background:rgba(154,107,0,.16);color:var(--warn)}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}.barrow{grid-template-columns:1fr}.wrap{padding:14px 12px 30px}.cmp{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h2 class="sr-only">Comcare dashboard: leave runway to LWOP, NWE with vs without posting allowance if liability accepted, net return after Slater and Gordon legal costs, and a Wearing Blairs vs Slater and Gordon firm comparison.</h2>
+<div class="wrap">
+
+<header class="head">
+  <div class="eyebrow">Comcare claim 1390598/1 · MPC review ROA-26-0097 · J. Saw · EL104 · as at 5 Jun 2026</div>
+  <h1>Comcare &amp; MPC Dashboard</h1>
+  <div class="sub">Two linked matters — the <b>Comcare</b> psychological-injury claim and the <b>MPC</b> review of the s25 early posting-cessation. Covers: case timeline · MPC status · leave runway to LWOP · NWE with vs without posting allowance if liability accepted · net return after Slater &amp; Gordon fixed fees · legal-representation comparison (WB vs S&amp;G).</div>
+  <div class="alert"><b>Key caution:</b> while the claim is rejected you live on your own leave. If accepted later, the pre-acceptance "back-payment" is largely realised as <b>leave re-credit, not new cash</b> — so weigh legal fees against actual cash benefit. Indicative only; not financial/legal advice.</div>
+</header>
+
+<!-- SECTION 0 — CASE TIMELINE -->
+<div class="section">Case timeline — events to date</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+    <div id="tlFilter" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div class="seg" id="segView" style="max-width:200px"><button type="button" data-v="list" class="on">List</button><button type="button" data-v="table">Table</button></div>
+  </div>
+  <div id="timeline"></div>
+  <div style="border:1px dashed var(--line2);border-radius:var(--r);padding:14px 16px;margin-top:16px">
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink2);margin-bottom:10px">+ Add an event</div>
+    <div style="display:grid;grid-template-columns:140px 1fr 150px 160px auto;gap:10px;align-items:end">
+      <div class="ctl"><label for="addDate">Date</label><input type="date" id="addDate"></div>
+      <div class="ctl"><label for="addTitle">Event</label><input type="text" id="addTitle" placeholder="what happened"></div>
+      <div class="ctl"><label for="addCat">Category</label><select id="addCat"><option value="emp">Employment</option><option value="med">Medical</option><option value="com">Comcare</option><option value="leg">Legal</option><option value="lv">Leave/Pay</option><option value="dl">Deadline</option></select></div>
+      <div class="ctl"><label for="addSrc">Source</label><input type="text" id="addSrc" placeholder="email / letter / note"></div>
+      <button type="button" id="addBtn" style="padding:9px 16px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:13px;cursor:pointer">Add</button>
+    </div>
+    <div id="addMsg" style="font-size:11.5px;color:var(--ink3);margin-top:7px"></div>
+  </div>
+  <div class="note">Compiled from the case Drive folders (S&amp;G letters, Short Brief, reconsideration pack) and Gmail. Source conflicts flagged (unfit 12 Jan vs leave 19 Feb; claim 26 vs 27 Feb). <b>Added events and all inputs are saved in your browser</b> and persist when you reopen.</div>
+</div>
+
+<!-- MPC STATUS -->
+<div class="section">MPC review — status (runs parallel to Comcare)</div>
+<div class="card">
+  <div class="kpis" style="margin-bottom:14px">
+    <div class="kpi com" style="border-left-color:var(--b)"><div class="l">Comcare reconsideration</div><div class="v" id="mDeadline" style="font-size:18px"></div><div class="s" id="mDeadlineSub"></div></div>
+    <div class="kpi pp"><div class="l">MPC target completion</div><div class="v" style="font-size:18px">30 Jun 2026</div><div class="s">internal aim</div></div>
+    <div class="kpi pp"><div class="l">MPC formal due date</div><div class="v" id="mDue" style="font-size:18px">22 Jul 2026</div><div class="s" id="mDueSub"></div></div>
+    <div class="kpi a"><div class="l">MPC stage</div><div class="v" style="font-size:18px">Under review</div><div class="s">submissions in; MPC drafting</div></div>
+  </div>
+  <div style="font-size:13.5px;line-height:1.7;color:var(--ink2)">
+    <b style="color:var(--ink)">What the MPC is reviewing:</b> Austrade's <b>s25 decision (23 Dec 2025)</b> to cease the Vietnam posting early and redeploy to Adelaide. Primary (internal) review <b>upheld 15 Jan 2026</b> — no Code of Conduct breach finding, no sanction. Secondary review <b>filed 6 Mar 2026</b>, supplementary response <b>27 Apr 2026</b>.<br><br>
+    <b style="color:var(--ink)">Legally separate from Comcare:</b> the MPC tests whether the early cessation was the <b>correct/preferable and proportionate</b> employment decision; Comcare tests SRC Act liability (injury, causation, the s5A "reasonable administrative action" exclusion). <b>Same facts, different tests.</b><br><br>
+    <b style="color:var(--warn)">Interaction risk:</b> framing the MPC case as "unfair/disproportionate management" can be recycled by Comcare to argue the injury flowed from <b>reasonable administrative action</b> (defeating the claim). Keep the two narratives consistent. A favourable MPC outcome supports the Comcare "manner of action" argument — but don't conflate the tests.
+  </div>
+</div>
+
+<!-- SECTION 1 — LEAVE RUNWAY -->
+<div class="section">1 · Leave runway — how long until LWOP</div>
+<div class="card">
+  <div class="controls" style="margin-bottom:16px">
+    <div class="ctl"><label for="lvStart">Projection start</label><input type="date" id="lvStart" value="2026-06-04"></div>
+    <div class="ctl"><label for="lvPers">Personal leave (days)</label><input type="number" id="lvPers" value="52.68" step="0.01" min="0"></div>
+    <div class="ctl"><label for="lvLsl">LSL (days)</label><input type="number" id="lvLsl" value="65" step="1" min="0"></div>
+    <div class="ctl"><label for="lvLslDate">LSL vests</label><input type="date" id="lvLslDate" value="2026-08-16"></div>
+    <div class="ctl"><label for="lvAnn">Annual leave (days)</label><input type="number" id="lvAnn" value="29.08" step="0.01" min="0"></div>
+    <div class="ctl"><span class="lbl">LSL pay rate</span><div class="seg" id="segHalf"><button type="button" data-v="1" class="on">Full pay</button><button type="button" data-v="2">Half pay</button></div></div>
+    <div class="ctl"><span class="lbl">Accrue leave while off</span><div class="seg" id="segAccr"><button type="button" data-v="1" class="on">On (EA)</button><button type="button" data-v="0">Off</button></div></div>
+  </div>
+  <div class="kpis" style="margin-bottom:6px">
+    <div class="kpi a"><div class="l">Total paid days</div><div class="v" id="lvTot"></div><div class="s">personal + LSL + annual</div></div>
+    <div class="kpi pos"><div class="l">Paid-leave covers until</div><div class="v" id="lvCliff" style="font-size:19px"></div><div class="s" id="lvCliffSub"></div></div>
+    <div class="kpi warn"><div class="l">Weeks of paid runway</div><div class="v" id="lvWeeks"></div><div class="s">from projection start</div></div>
+    <div class="kpi neg"><div class="l">LWOP begins</div><div class="v" id="lvLwop" style="font-size:19px"></div><div class="s">no income unless accepted</div></div>
+  </div>
+  <div id="lvBars" style="margin-top:14px"></div>
+  <div class="note"><b>Now factored:</b> (1) <b>accruals</b> — annual + personal keep accruing while on paid leave (EA cl 37/39, ~40 d/yr combined; "+N" shown on total days); (2) <b>SA public holidays</b> paid, not drawn (King's B'day 8 Jun, Labour Day 5 Oct, Christmas, Boxing/Proclamation, NYD); (3) <b>Dec close-down</b> — 3 paid days between Christmas &amp; New Year, no deduction (EA cl 35(4)). Waterfall: personal → LSL (vests 16 Aug, your 10-yr mark) → annual. Half-pay LSL doubles duration, halves income. Confirm with Pay that leave accrues during paid absence and LSL is re-credited on Comcare acceptance (EA cl 56 auto-re-credits personal/carer's only).</div>
+</div>
+
+<!-- SECTION 2 — NWE -->
+<div class="section">2 · NWE if Comcare accepts — with vs without posting allowance</div>
+<div class="card">
+  <div class="controls" style="margin-bottom:16px">
+    <div class="ctl"><label for="accept">Acceptance date</label><input type="date" id="accept" value="2027-02-01"></div>
+    <div class="ctl"><label for="postEnd">Posting allowance ends</label><input type="date" id="postEnd" value="2027-07-01"></div>
+    <div class="ctl"><label for="awayYrs">Away (years)</label><input type="number" id="awayYrs" value="2" step="0.5" min="0.5"></div>
+    <div class="ctl"><span class="lbl">Post-45wk rate (s19(3))</span><div class="seg" id="segAdj"><button type="button" data-v="0.75" class="on">75%</button><button type="button" data-v="0.80">80%</button><button type="button" data-v="0.90">90%</button></div></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi a"><div class="l">A · onshore NWE</div><div class="v" id="nA"></div><div class="s">$2,612/wk · gross over period</div></div>
+    <div class="kpi b"><div class="l">B · with posting allowance</div><div class="v" id="nB"></div><div class="s">$5,252/wk to 1 Jul 2027</div></div>
+    <div class="kpi pos"><div class="l">Allowance prize · B − A</div><div class="v" id="nPrize"></div><div class="s">value of the s8 argument</div></div>
+    <div class="kpi pp"><div class="l">Back-pay (mostly leave re-credit)</div><div class="v" id="nBack"></div><div class="s" id="nBackSub">pre-acceptance, Scenario B</div></div>
+  </div>
+  <table id="nweTbl" style="margin-top:14px">
+    <thead><tr><th>Phase</th><th>Dates</th><th>Wks</th><th>Rate</th><th>A /wk</th><th>A total</th><th>B /wk</th><th>B total</th></tr></thead>
+    <tbody></tbody><tfoot></tfoot>
+  </table>
+  <div class="note"><b>s8</b> NWE includes allowances unless "special expenses" — B only holds if injury dated in-posting; allowance ends when the posting would have (1 Jul 2027), then B reverts to onshore. <b>s19(2)</b> first 45 wks 100%; <b>s19(3)</b> after = 75/80/85/90/95%. Back-payment for the period you were on paid leave is realised as <b>leave re-credit</b>, not double cash.</div>
+</div>
+
+<!-- SECTION 3 — COST vs RETURN -->
+<div class="section">3 · Slater &amp; Gordon cost vs return (No Win No Fee, verified from signed agreement)</div>
+<div class="card">
+  <div class="controls" style="margin-bottom:16px">
+    <div class="ctl"><label for="stage">Resolution stage</label><select id="stage">
+      <option value="1">Stage 1 · before ART application</option>
+      <option value="2">Stage 2 · after lodging, before conciliation</option>
+      <option value="3" selected>Stage 3 · after conciliation (S&G expects this)</option>
+      <option value="4">Stage 4 · 1-day ART hearing</option></select></div>
+    <div class="ctl"><label for="costPt">Cost point</label><select id="costPt"><option value="mid" selected>Midpoint</option><option value="low">Low end</option><option value="high">High end</option></select></div>
+    <div class="ctl"><label for="extraDays">Extra hearing days</label><input type="number" id="extraDays" value="0" min="0" step="1"></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi pp"><div class="l">Stage fixed fee</div><div class="v" id="cFixed"></div><div class="s" id="cStageSub"></div></div>
+    <div class="kpi neg"><div class="l">You pay from compensation</div><div class="v" id="cPay"></div><div class="s">after ~50% other-party contribution</div></div>
+    <div class="kpi a"><div class="l">Net return · A onshore</div><div class="v" id="cNetA"></div><div class="s" id="cNetASub"></div></div>
+    <div class="kpi b"><div class="l">Net return · B allowances</div><div class="v" id="cNetB"></div><div class="s" id="cNetBSub"></div></div>
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div>
+      <table id="costTbl">
+        <thead><tr><th>Stage</th><th>Fixed fee</th><th>Total legal cost</th><th>You pay</th><th>% of A 2-yr</th><th>% of B 2-yr</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div>
+      <div id="cBars"></div>
+      <div class="note" style="margin-top:12px"><b>Read:</b> cost is material against the conservative onshore case (~<span id="cPctA"></span> of 2-yr A) but small if the allowance argument wins (~<span id="cPctB"></span> of 2-yr B). <b>Lose = $0 fees</b> and no disbursement repayment. Bigger danger: paying fees when the "win" mainly restores leave, not cash — confirm the cash source with S&G.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4 — FIRM COMPARISON -->
+<div class="section">4 · Legal representation — Wearing Blairs vs Slater &amp; Gordon</div>
+<div class="card">
+  <div class="alert" style="background:rgba(178,59,59,.12);border:1px solid rgba(178,59,59,.3);color:var(--ink);margin-top:0;margin-bottom:16px"><b style="color:var(--neg)">Scope mismatch — the two offers are not like-for-like.</b> WB acts on the <b>reconsideration now</b>; S&amp;G defers to the <b>ART stage</b> and won't touch the reconsideration. Reconsideration is due <b>6 Jun 2026</b> (extended to <b>22 Jun 2026</b>).</div>
+  <div class="cmp">
+    <div class="firm wb">
+      <h4>Wearing Blairs (WB)</h4>
+      <span class="tag" style="background:rgba(58,110,165,.16);color:var(--a)">Acts now · reconsideration</span>
+      <dl>
+        <dt>Contact</dt><dd>Donald Blairs, Adelaide · referral from Simon Callaghan</dd>
+        <dt>Scope</dt><dd>Draft + <b>file the reconsideration itself</b>, starting now</dd>
+        <dt>Deadline</dt><dd><span class="flag good">files in time</span> aims to lodge by/around 22 Jun (extended)</dd>
+        <dt>Fee model</dt><dd><span class="flag unk">UNKNOWN</span> retainer PDF (4 Jun) — fee schedule not yet read</dd>
+        <dt>Disbursements</dt><dd><span class="flag unk">unknown</span> pending retainer review</dd>
+        <dt>Process</dt><dd>Sign retainer → Donald acts immediately. No union referral needed</dd>
+      </dl>
+    </div>
+    <div class="firm sg">
+      <h4>Slater &amp; Gordon (S&amp;G)</h4>
+      <span class="tag" style="background:rgba(108,90,168,.16);color:var(--purple)">ART stage only · No Win No Fee</span>
+      <dl>
+        <dt>Contact</dt><dd>Connie Iarossi / Claire Humphries (Comcare dept)</dd>
+        <dt>Scope</dt><dd><b>Will not</b> do reconsideration. You self-lodge; they act at ART</dd>
+        <dt>Deadline</dt><dd><span class="flag good">covered</span> sought extension to 22 Jun; you self-lodge</dd>
+        <dt>Fee model</dt><dd><span class="flag good">No Win No Fee</span> $0 pro fees on a loss; cap bites only on lump sums</dd>
+        <dt>Disbursements</dt><dd>CPSU terms (3 Jun): <b>S&amp;G funds, repaid from settlement</b>. Standard (2 Jun): <b>$4,500 trust you bear</b></dd>
+        <dt>Process</dt><dd>Needs <b>CPSU union referral</b>; <b>closes file</b> until Reviewable Decision, then reopens at ART</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="kpis" style="margin-top:14px">
+    <div class="kpi a"><div class="l">Best on the deadline</div><div class="v" style="font-size:18px">Wearing Blairs</div><div class="s">handles end-to-end reconsideration</div></div>
+    <div class="kpi pp"><div class="l">Best documented downside</div><div class="v" style="font-size:18px">S&amp;G · CPSU</div><div class="s">$0 fees on loss, funds disbursements</div></div>
+    <div class="kpi warn"><div class="l">Open S&amp;G questions</div><div class="v" style="font-size:18px">3 unanswered</div><div class="s">fees trigger · cap · scope (extension secured)</div></div>
+    <div class="kpi neg"><div class="l">Blocking unknown</div><div class="v" style="font-size:18px">WB fee schedule</div><div class="s">PDF unread — can't fully compare</div></div>
+  </div>
+  <div class="note"><b>Recommendation (not mutually exclusive):</b> (1) <b>Let WB file the reconsideration by 22 Jun</b> — the extended deadline buys breathing room; (2) <b>lock S&amp;G's CPSU No Win No Fee for the ART stage</b>, where the real money and risk sit; (3) <b>get WB's fee schedule</b> — if WB matches No Win No Fee <i>and</i> handles the reconsideration, one firm end-to-end beats splitting. <b>Next action:</b> confirm Comcare's extension acceptance (email/official confirmation), and parse the WB retainer PDF. Source: Gmail threads (WB 28 May–4 Jun; S&amp;G 14 May–4 Jun) + <code>Legal-Costs-vs-Recovery.md</code>.</div>
+</div>
+
+<!-- WORKING NOTES + DATA -->
+<div class="section">Working notes &amp; data</div>
+<div class="card">
+  <textarea id="notes" placeholder="Running notes — strategy, questions for the lawyer, things to confirm with Pay/CPSU… (saved automatically in your browser)" style="width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--line2);border-radius:var(--r);background:var(--surface);color:var(--ink);font:14px/1.6 inherit;resize:vertical"></textarea>
+  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <button type="button" id="expBtn" style="padding:8px 14px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink);font-weight:600;font-size:12.5px;cursor:pointer">↓ Export data (JSON)</button>
+    <label style="padding:8px 14px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink);font-weight:600;font-size:12.5px;cursor:pointer">↑ Import data<input type="file" id="impFile" accept="application/json" hidden></label>
+    <button type="button" id="clrBtn" style="padding:8px 14px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--neg);font-weight:600;font-size:12.5px;cursor:pointer">Reset to defaults</button>
+    <span style="font-size:11.5px;color:var(--ink3)">Export = back up your added events + notes (browser storage can clear). Import to restore.</span>
+  </div>
+</div>
+
+<div class="foot">Sources: Austrade pay advices 18 Dec 2025–4 Jun 2026 · SRC Act 1988 ss 8,19,20 · LSL (Cth Employees) Act 1976 · S&amp;G Conditional Costs Agreement (signed 3 Jun 2026) · Wearing Blairs retainer terms (4 Jun 2026) · MPC review ROA-26-0097 · indicative only — confirm deemed injury date, super offset, tax, and leave re-credit.</div>
+</div>
+
+<script>
+const f0=v=>"$"+Math.round(v).toLocaleString('en-AU');
+const fK=v=>v>=1e6?"$"+(v/1e6).toFixed(2)+"M":v>=1e3?"$"+(v/1e3).toFixed(0)+"K":"$"+Math.round(v);
+const pct=v=>(v*100).toFixed(1)+"%";
+const fmt=d=>d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+const el=id=>document.getElementById(id);
+const NWE={A:2612.15,B:5251.52};
+const SA_HOL=["2026-06-08","2026-10-05","2026-12-25","2026-12-28","2027-01-01","2026-01-26","2027-01-26","2026-03-09","2027-03-08","2026-04-03","2027-04-02"];
+const isHol=d=>SA_HOL.includes(d.toISOString().slice(0,10));
+const CD=["2026-12-29","2026-12-30","2026-12-31","2027-12-29","2027-12-30","2027-12-31"]; // Dec close-down (cl35) — paid, no deduction
+const isCD=d=>CD.includes(d.toISOString().slice(0,10));
+const ACC=20/260; // per working day: 20 d/yr each for annual & personal
+let half=1, adj=0.75, accr=1;
+
+// ---- SECTION 1: leave runway ----
+function leave(){
+  const start=new Date(el('lvStart').value);
+  let pers=+el('lvPers').value||0, lsl=+el('lvLsl').value||0, ann=+el('lvAnn').value||0;
+  const lslVest=new Date(el('lvLslDate').value);
+  const tot=pers+lsl+ann;
+  el('lvTot').textContent=tot.toFixed(1)+" d";
+  let p=pers,l=lsl,a=ann, d=new Date(start), days=0, guard=0, accrued=0;
+  let endP=null,endL=null,endA=null;
+  while((p>0||l>0||a>0)&&guard<2000){
+    guard++; const dow=d.getDay();
+    if(dow!==0&&dow!==6&&!isHol(d)){ // paid working day
+      if(accr){p+=ACC;a+=ACC;accrued+=2*ACC;} // annual + personal accrue while on paid leave
+      if(isCD(d)){ /* Dec close-down: paid, no leave deducted */ }
+      else if(p>0){p-=1;if(p<=0&&!endP)endP=new Date(d);}
+      else if(d>=lslVest&&l>0){l-=1/half;if(l<=0&&!endL)endL=new Date(d);}
+      else if(a>0){a-=1;if(a<=0&&!endA)endA=new Date(d);}
+    }
+    days++; d.setDate(d.getDate()+1);
+  }
+  el('lvTot').textContent=tot.toFixed(1)+(accr?` +${accrued.toFixed(0)}`:"")+" d";
+  const cliff=new Date(d); // first LWOP day ≈ d
+  const wkRun=Math.round(days/7);
+  el('lvCliff').textContent=fmt(new Date(cliff.getTime()-864e5));
+  el('lvCliffSub').textContent="last paid day";
+  el('lvWeeks').textContent=wkRun+" wks";
+  el('lvLwop').textContent=fmt(cliff);
+  // bars (share of total)
+  const buckets=[["Personal",pers,'p',endP],["Long service"+(half==2?" (½ pay)":""),lsl*(half==2?2:1)/1,'l',endL],["Annual",ann,'an',endA]];
+  const maxd=Math.max(pers,lsl*(half),ann,1);
+  el('lvBars').innerHTML=buckets.map(b=>{
+    const w=Math.max(3,Math.min(100,(b[1]/ (pers+lsl*(half)+ann))*100));
+    const dt=b[3]?("→ "+fmt(b[3])):"—";
+    return `<div class="barrow"><span class="nm">${b[0]}<br><span style="font-weight:400;color:var(--ink3);font-size:11px">${b[1].toFixed(1)} d</span></span><div class="bar"><div class="fill ${b[2]}" style="width:${w}%"></div></div><span class="dt">exhausts ${dt}</span></div>`;
+  }).join('');
+}
+
+// ---- SECTION 2: NWE ----
+function nwe(){
+  const start=new Date('2026-02-19');
+  const accept=new Date(el('accept').value), postEnd=new Date(el('postEnd').value);
+  const yrs=+el('awayYrs').value||2;
+  const N=Math.round(yrs*52);
+  const wB=(date,i)=> ( (i<= Math.round((postEnd-start)/(7*864e5)))?NWE.B:NWE.A );
+  const cutoff=Math.round((postEnd-start)/(7*864e5));
+  const acceptWk=Math.round((accept-start)/(7*864e5));
+  let totA=0,totB=0,backB=0;
+  for(let i=1;i<=N;i++){const rate=i<=45?1:adj;
+    const a=NWE.A*rate, b=((i<=cutoff)?NWE.B:NWE.A)*rate; totA+=a;totB+=b; if(i<=acceptWk)backB+=b;}
+  el('nA').textContent=fK(totA); el('nB').textContent=fK(totB);
+  el('nPrize').textContent=fK(totB-totA);
+  el('nBack').textContent=fK(backB); el('nBackSub').textContent=`to ${fmt(accept)} · re-credit + LWOP cash`;
+  // phase table
+  const segs=[["P1 · first 45 wks",1,Math.min(45,N),1,true],["P2 · post-45, in-posting",46,Math.min(cutoff,N),adj,true],["P3 · post-posting",cutoff+1,N,adj,false]];
+  const tb=el('nweTbl').querySelector('tbody');tb.innerHTML="";let TA=0,TB=0;
+  segs.forEach(s=>{if(s[2]<s[1])return;const w=s[2]-s[1]+1;const aw=NWE.A*s[3],bw=(s[4]?NWE.B:NWE.A)*s[3];const at=aw*w,bt=bw*w;TA+=at;TB+=bt;
+    const d1=new Date(start);d1.setDate(d1.getDate()+s[1]*7);const d2=new Date(start);d2.setDate(d2.getDate()+s[2]*7);
+    tb.innerHTML+=`<tr><td>${s[0]}</td><td>${fmt(d1)} – ${fmt(d2)}</td><td>${w}</td><td>${(s[3]*100).toFixed(0)}%</td><td>${f0(aw)}</td><td>${f0(at)}</td><td>${f0(bw)}</td><td>${f0(bt)}</td></tr>`;});
+  el('nweTbl').querySelector('tfoot').innerHTML=`<tr><td colspan="5">Total (${N} wks)</td><td>${f0(TA)}</td><td></td><td>${f0(TB)}</td></tr>`;
+  return {totA,totB};
+}
+
+// ---- SECTION 3: cost vs return ----
+const STAGES={
+  1:{name:"Stage 1",sub:"before ART application",fixed:11400,total:[12000,17000],pay:[12000,17000]},
+  2:{name:"Stage 2",sub:"after lodging, before conciliation",fixed:22800,total:[23000,30000],pay:[12000,15000]},
+  3:{name:"Stage 3",sub:"after conciliation",fixed:34200,total:[35000,50000],pay:[18000,25000]},
+  4:{name:"Stage 4",sub:"1-day ART hearing",fixed:57000,total:[62000,88000],pay:[31000,44000]}
+};
+const EXTRA=16500;
+function costFor(s,pt){const a=STAGES[s].pay;return pt==='low'?a[0]:pt==='high'?a[1]:(a[0]+a[1])/2;}
+function cost(totA,totB){
+  const s=el('stage').value, pt=el('costPt').value, extra=(+el('extraDays').value||0)*EXTRA;
+  const st=STAGES[s], pay=costFor(s,pt)+extra;
+  el('cFixed').textContent=f0(st.fixed); el('cStageSub').textContent=st.sub+(extra?` +${f0(extra)} extra`:"");
+  el('cPay').textContent=f0(pay);
+  el('cNetA').textContent=fK(totA-pay); el('cNetASub').textContent=pct(pay/totA)+" of 2-yr A";
+  el('cNetB').textContent=fK(totB-pay); el('cNetBSub').textContent=pct(pay/totB)+" of 2-yr B";
+  el('cPctA').textContent=pct(pay/totA); el('cPctB').textContent=pct(pay/totB);
+  const tb=el('costTbl').querySelector('tbody');tb.innerHTML="";
+  Object.entries(STAGES).forEach(([k,x])=>{const p=(x.pay[0]+x.pay[1])/2;
+    tb.innerHTML+=`<tr${k===s?' style="background:var(--surface2)"':''}><td><span class="pill">${x.name}</span> ${x.sub}</td><td>${f0(x.fixed)}</td><td>${fK(x.total[0])}–${fK(x.total[1])}</td><td><b>${fK(x.pay[0])}–${fK(x.pay[1])}</b></td><td>${pct(p/totA)}</td><td>${pct(p/totB)}</td></tr>`;});
+  const max=totB;
+  const bars=[["A 2-yr gross",totA,'a'],["B 2-yr gross",totB,'b'],["You pay (S&G)",pay,'an'],["Allowance prize",totB-totA,'l']];
+  el('cBars').innerHTML=bars.map(b=>`<div class="barrow"><span class="nm">${b[0]}</span><div class="bar"><div class="fill ${b[2]==='a'?'p':b[2]==='b'?'an':b[2]==='l'?'l':'p'}" style="width:${Math.max(2,Math.min(100,b[1]/max*100))}%;background:${b[2]==='a'?'var(--a)':b[2]==='b'?'var(--b)':b[2]==='an'?'var(--neg)':'var(--pos)'}"></div></div><span class="dt">${f0(b[1])}</span></div>`).join('');
+}
+
+// ---- SECTION 0: timeline ----
+const CATS={emp:["Employment","var(--a)"],med:["Medical","var(--pos)"],com:["Comcare","var(--b)"],leg:["Legal","var(--purple)"],lv:["Leave/Pay","var(--warn)"],dl:["Deadline","var(--neg)"]};
+const EVENTS=[
+["2016-08-15","emp","Commenced employment with Austrade","S&G letter"],
+["2024-07-01","emp","Began 3-yr Vietnam posting (Trade Commissioner, HCMC) — due to end 1 Jul 2027","S&G"],
+["2024-12-01","emp","Began raising concerns about manager's conduct","Short Brief"],
+["2025-12-03","com","Preliminary inquiry notice (8 concerns); symptoms first noticed","Short Brief"],
+["2025-12-23","emp","CPO decision to cease the posting early (s25)","Short Brief"],
+["2025-12-30","med","First medical treatment (HCMC); psychiatrist referral","Short Brief"],
+["2026-01-12","med","Certified unfit for work (severe stress / adjustment disorder)","Short Brief"],
+["2026-01-15","emp","Notified posting ceased, return to Adelaide; s25 upheld on primary review","Short Brief"],
+["2026-01-27","emp","Relocation pressed during certified incapacity ('no negotiation')","Recon pack"],
+["2026-02-03","emp","Returned to Adelaide; posting completed; pay reverts onshore","Payslips"],
+["2026-02-19","lv","Sick/personal leave begins (onshore, full pay)","Payslips"],
+["2026-02-26","com","Comcare claim lodged — major depressive disorder + anxiety","S&G (27 Feb per Brief)"],
+["2026-03-06","com","MPC secondary review filed","Short Brief"],
+["2026-04-13","med","Comcare medical report / referral letter issued","Gmail"],
+["2026-04-16","com","Correction request re Comcare medical report","Gmail"],
+["2026-04-27","com","MPC supplementary response filed","Short Brief"],
+["2026-05-07","com","Comcare DENIED liability — 'reasonable administrative action' (s5A)","Determination"],
+["2026-05-11","leg","Short brief prepared; legal enquiries begin","Drive"],
+["2026-05-19","leg","Lawyer consults (Cameron Hall, KH, Lander & Co)","Gmail"],
+["2026-05-21","dl","Comcare confirms reconsideration deadline = 6 Jun 2026","Gmail"],
+["2026-05-27","med","Austrade call during certified leave → panic attack; new cert ('another month') sent","Gmail"],
+["2026-05-28","leg","Incident notified to CPSU (Daisy) + GP (Dr Rajat)","Gmail"],
+["2026-05-29","leg","Slater & Gordon teleconference — 'reasonable prospects' at ART","S&G"],
+["2026-06-03","leg","S&G CPSU costs agreement signed; medical cert sent to Pay team","DocuSign/Gmail"],
+["2026-06-04","leg","Wearing Blairs retainer terms sent — offers to draft + file reconsideration now","Gmail"],
+["2026-06-06","dl","Original reconsideration deadline","Comcare"],
+["2026-06-22","dl","Comcare reconsideration deadline extended to 22 June 2026","Gmail"],
+["2026-06-30","dl","MPC review target completion","MPC"],
+["2026-07-22","dl","MPC formal due date","MPC"],
+["2026-08-16","dl","Long service leave vests (10 years' service)","LSL Act"],
+["2027-07-01","dl","Posting term would have ended (allowance cap)","Contract"]
+];
+let tlFilter=new Set(Object.keys(CATS));
+const TODAY=new Date('2026-06-05');
+let userEvents=[]; // [date,cat,title,src]
+let tlView='list';
+function renderTL(){
+  const fp=el('tlFilter');
+  fp.innerHTML=Object.entries(CATS).map(([k,v])=>`<button type="button" class="tlp ${tlFilter.has(k)?'on':''}" data-c="${k}" style="${tlFilter.has(k)?`background:${v[1]}`:''}">${v[0]}</button>`).join('');
+  fp.querySelectorAll('button').forEach(b=>b.onclick=()=>{const c=b.dataset.c;tlFilter.has(c)?tlFilter.delete(c):tlFilter.add(c);renderTL();});
+  const merged=EVENTS.map(e=>({e,u:-1})).concat(userEvents.map((e,i)=>({e,u:i})))
+    .filter(o=>tlFilter.has(o.e[1])).sort((x,y)=>new Date(x.e[0])-new Date(y.e[0]));
+  const tl=el('timeline');let html="";
+  if(tlView==='table'){
+    html='<table><thead><tr><th>Date</th><th>Event</th><th>Category</th><th>Status</th><th>Source</th></tr></thead><tbody>';
+    merged.forEach(o=>{const e=o.e,dt=new Date(e[0]),fut=dt>TODAY,c=CATS[e[1]][1];
+      const st=e[1]==='dl'&&fut?'Deadline':(fut?'Upcoming':'Done');
+      const del=o.u>=0?` <a href="#" data-del="${o.u}" style="color:var(--neg);font-size:11px;text-decoration:none">✕</a>`:"";
+      html+=`<tr><td style="white-space:nowrap;color:${c};font-weight:600">${fmt(dt)}</td><td style="text-align:left">${e[2]}${del}</td>`+
+        `<td style="text-align:left"><span class="pill" style="background:${c}22;color:${c}">${CATS[e[1]][0]}</span></td>`+
+        `<td style="text-align:left;color:${fut?'var(--neg)':'var(--ink3)'}">${st}</td><td style="text-align:left;color:var(--ink3);font-size:12px">${e[3]}</td></tr>`;});
+    html+='</tbody></table>';
+  }else{
+    let todayDrawn=false;
+    merged.forEach(o=>{const e=o.e,dt=new Date(e[0]),fut=dt>TODAY,c=CATS[e[1]][1];
+      if(fut&&!todayDrawn){html+=`<div class="tl-today">▼ TODAY · ${fmt(TODAY)}</div>`;todayDrawn=true;}
+      const del=o.u>=0?` <a href="#" data-del="${o.u}" style="color:var(--neg);font-size:11px;text-decoration:none">✕ remove</a>`:"";
+      const tag=o.u>=0?` <span style="font-size:10px;color:var(--ink3)">(added)</span>`:"";
+      html+=`<div class="tl-item ${fut?'tl-future':''}"><span class="tl-dot ${e[1]==='dl'?'ring':''}" style="background:${fut?'var(--surface)':c};border-color:${c}"></span>`+
+        `<div class="tl-date" style="color:${c}">${fmt(dt)}${fut?' · upcoming':''}${tag}</div>`+
+        `<div class="tl-title">${e[2]}${del}</div><div class="tl-src">${e[3]}</div></div>`;});
+  }
+  tl.innerHTML=html;
+  tl.querySelectorAll('a[data-del]').forEach(a=>a.onclick=ev=>{ev.preventDefault();userEvents.splice(+a.dataset.del,1);saveState();renderTL();});
+}
+function addUserEvent(){
+  const d=el('addDate').value, t=el('addTitle').value.trim(), c=el('addCat').value, s=el('addSrc').value.trim()||"Manual entry";
+  if(!d||!t){el('addMsg').textContent="Need a date and an event.";return;}
+  userEvents.push([d,c,t,s]); el('addTitle').value="";el('addSrc').value="";el('addMsg').textContent="Added.";
+  saveState();renderTL();
+}
+
+const INP=["lvStart","lvPers","lvLsl","lvLslDate","lvAnn","accept","postEnd","awayYrs","stage","costPt","extraDays"];
+const LSKEY="jonCaseDash_v1";
+function saveState(){try{localStorage.setItem(LSKEY,JSON.stringify({
+  inp:Object.fromEntries(INP.map(id=>[id,el(id).value])),
+  half,adj,accr,userEvents,notes:el('notes').value,filter:[...tlFilter],view:tlView
+}));}catch(e){}}
+function setSeg(segId,val,setter){const seg=el(segId);[...seg.children].forEach(b=>{const on=b.dataset.v==String(val);b.classList.toggle('on',on);if(on)setter(+val);});}
+function loadState(){try{const s=JSON.parse(localStorage.getItem(LSKEY));if(!s)return;
+  if(s.inp)INP.forEach(id=>{if(s.inp[id]!=null)el(id).value=s.inp[id];});
+  if(s.half!=null){half=s.half;setSeg('segHalf',s.half,v=>half=v);}
+  if(s.adj!=null){adj=s.adj;setSeg('segAdj',s.adj,v=>adj=v);}
+  if(s.accr!=null){accr=s.accr;setSeg('segAccr',s.accr,v=>accr=v);}
+  if(Array.isArray(s.userEvents))userEvents=s.userEvents;
+  if(s.notes!=null)el('notes').value=s.notes;
+  if(Array.isArray(s.filter))tlFilter=new Set(s.filter);
+  if(s.view){tlView=s.view;[...el('segView').children].forEach(b=>b.classList.toggle('on',b.dataset.v===s.view));}
+}catch(e){}}
+function daysTo(iso){return Math.round((new Date(iso)-TODAY)/864e5);}
+function mpc(){
+  const dc=daysTo('2026-06-22'), dm=daysTo('2026-07-22');
+  el('mDeadline').textContent='22 Jun 2026';
+  el('mDeadlineSub').textContent=dc>0?`${dc} days left — lodge now`:(dc===0?'TODAY':`${-dc} days overdue`);
+  el('mDueSub').textContent=dm>0?`${dm} days away`:'passed';
+}
+function exportData(){const s=localStorage.getItem(LSKEY)||JSON.stringify({userEvents,notes:el('notes').value});
+  const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(s);
+  a.download='comcare-mpc-dashboard-'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function importData(file){const r=new FileReader();r.onload=()=>{try{localStorage.setItem(LSKEY,r.result);loadState();buildAll();}catch(e){alert('Invalid file');}};r.readAsText(file);}
+function buildAll(){renderTL();mpc();leave();const t=nwe();cost(t.totA,t.totB);saveState();}
+el('segHalf').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;half=+b.dataset.v;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));buildAll();});
+el('segAccr').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;accr=+b.dataset.v;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));buildAll();});
+el('segAdj').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;adj=+b.dataset.v;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));buildAll();});
+INP.forEach(id=>el(id).addEventListener('input',buildAll));
+el('segView').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tlView=b.dataset.v;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));renderTL();});
+el('addBtn').addEventListener('click',addUserEvent);
+el('notes').addEventListener('input',()=>{clearTimeout(window._nt);window._nt=setTimeout(saveState,400);});
+el('expBtn').addEventListener('click',exportData);
+el('impFile').addEventListener('change',e=>{if(e.target.files[0])importData(e.target.files[0]);});
+el('clrBtn').addEventListener('click',()=>{if(confirm('Reset all inputs, added events and notes to defaults?')){localStorage.removeItem(LSKEY);location.reload();}});
+loadState();
+buildAll();
+</script>
+</body>
+</html>
