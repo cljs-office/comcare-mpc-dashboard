@@ -9,135 +9,433 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comcare & MPC Dashboard · J. Saw</title>
+<title>Comcare · MPC · Legal Dashboard · J. Saw</title>
 <style>
 :root{
-  --navy:#14213d;--bg:#eef1f5;--surface:#fff;--surface2:#f6f8fb;
-  --ink:#16202e;--ink2:#51607a;--ink3:#7b8aa3;--line:#dce2ec;--line2:#c7d0de;
-  --a:#3a6ea5;--b:#c06b3e;--pos:#2f7d56;--neg:#b23b3b;--warn:#9a6b00;--purple:#6c5aa8;--accent:#3a6ea5;
-  --r:10px;--rlg:14px;--shadow:0 1px 2px rgba(16,32,54,.06),0 2px 8px rgba(16,32,54,.05);
+  --navy:#14213d;--bg:#eceff4;--surface:#fff;--surface2:#f4f7fb;
+  --ink:#13202e;--ink2:#4a5a73;--ink3:#76849c;--line:#dde3ec;--line2:#c5cedd;
+  --a:#35689f;--b:#bd6738;--pos:#2c7a52;--neg:#b03636;--warn:#8f6300;--purple:#6455a4;--accent:#35689f;
+  --r:11px;--rlg:16px;--maxw:1140px;
+  --shadow:0 1px 2px rgba(16,32,54,.05),0 3px 12px rgba(16,32,54,.06);
+  --shadow2:0 2px 5px rgba(16,32,54,.07),0 8px 28px rgba(16,32,54,.08);
 }
 @media(prefers-color-scheme:dark){:root{
-  --bg:#0e1422;--surface:#161f30;--surface2:#1c2740;--ink:#e8edf5;--ink2:#a7b4c9;--ink3:#7e8da6;
-  --line:#293449;--line2:#36425b;--a:#6ea3d8;--b:#e0966a;--pos:#5cc08a;--neg:#e2776f;--warn:#d4a034;--purple:#a99be4;--accent:#6ea3d8;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.25);}}
+  --bg:#0c1220;--surface:#151e2f;--surface2:#1b2740;--ink:#eef2f8;--ink2:#aebbd0;--ink3:#8493ad;
+  --line:#27324a;--line2:#37435d;--a:#74a8dc;--b:#e49b70;--pos:#62c690;--neg:#e87f77;--warn:#dba63d;--purple:#b0a3ea;--accent:#74a8dc;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 3px 12px rgba(0,0,0,.28);
+  --shadow2:0 2px 6px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.34);}}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1200px;margin:0 auto;padding:22px 18px 44px}
-:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:4px}
-.head{background:var(--navy);color:#fff;border-radius:var(--rlg);padding:22px 26px;margin-bottom:18px;box-shadow:var(--shadow)}
-.head .eyebrow{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:#9fb4d6;font-weight:700}
-.head h1{font-size:22px;font-weight:600;margin-top:5px;letter-spacing:-.3px}
-.head .sub{font-size:13px;color:#b9c6dd;margin-top:6px;max-width:880px}
-.alert{margin-top:13px;background:rgba(58,110,165,.18);border:1px solid rgba(159,180,214,.35);color:#dde7f6;font-size:12.5px;padding:10px 14px;border-radius:10px}
-.section{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3);margin:26px 4px 11px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--rlg);padding:18px 20px;box-shadow:var(--shadow)}
-.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.62;font-size:15.5px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:22px 20px 56px}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:5px}
+.head{background:linear-gradient(135deg,var(--navy),#1c2d52);color:#fff;border-radius:var(--rlg);padding:24px 28px;margin-bottom:14px;box-shadow:var(--shadow2)}
+.head .eyebrow{font-size:11.5px;letter-spacing:.7px;text-transform:uppercase;color:#a9bedd;font-weight:700}
+.head h1{font-size:25px;font-weight:680;margin-top:6px;letter-spacing:-.4px;line-height:1.2}
+.head .sub{font-size:13.5px;line-height:1.6;color:#c3cfe4;margin-top:8px;max-width:900px}
+.alert{margin-top:14px;background:rgba(116,168,220,.16);border:1px solid rgba(159,180,214,.34);color:#e3ecf8;font-size:13px;line-height:1.6;padding:11px 15px;border-radius:11px}
+.tabs{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:7px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:11px 4px;margin:0 -4px 8px;border-bottom:1px solid var(--line)}
+.tab{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--surface);color:var(--ink2);border-radius:999px;padding:9px 18px;font-size:14px;font-weight:650;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease,border-color .12s,background .12s}
+.tab:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tab.on{background:var(--accent);color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(53,104,159,.35)}
+.tab .tdot{width:9px;height:9px;border-radius:50%}
+.tab.on .tdot{background:#fff!important;opacity:.9}
+.tab .tcount{font-size:11px;font-weight:700;background:rgba(0,0,0,.12);border-radius:999px;padding:1px 8px}
+.tab.on .tcount{background:rgba(255,255,255,.24)}
+.tab-panel{display:none;animation:fade .2s ease}
+.tab-panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+.section{font-size:12.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--ink2);margin:26px 4px 12px;padding-bottom:7px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:9px}
+.section::before{content:"";width:4px;height:15px;border-radius:3px;background:var(--accent)}
+.section:first-child{margin-top:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--rlg);padding:20px 22px;box-shadow:var(--shadow)}
+.card+.card{margin-top:16px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px}
 .ctl label,.ctl .lbl{display:block;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
-.ctl input,.ctl select{width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:8px;background:var(--surface);color:var(--ink);font:13px/1.2 inherit;font-variant-numeric:tabular-nums}
-.seg{display:flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:var(--surface2)}
-.seg button{flex:1;border:none;background:transparent;padding:8px 6px;font-size:12px;cursor:pointer;color:var(--ink2)}
-.seg button.on{background:var(--accent);color:#fff;font-weight:600}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:13px}
-.kpi{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:var(--r);padding:15px 17px;box-shadow:var(--shadow)}
+.ctl input,.ctl select{width:100%;padding:9px 11px;border:1px solid var(--line2);border-radius:9px;background:var(--surface);color:var(--ink);font:13.5px/1.2 inherit;font-variant-numeric:tabular-nums}
+.ctl input:focus,.ctl select:focus{border-color:var(--accent)}
+.seg{display:flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden;background:var(--surface2)}
+.seg button{flex:1;border:none;background:transparent;padding:9px 6px;font-size:12.5px;cursor:pointer;color:var(--ink2);font-weight:600}
+.seg button.on{background:var(--accent);color:#fff;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line2);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);transition:transform .12s ease,box-shadow .12s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}
 .kpi.a{border-left-color:var(--a)}.kpi.b{border-left-color:var(--b)}.kpi.pos{border-left-color:var(--pos)}.kpi.neg{border-left-color:var(--neg)}.kpi.warn{border-left-color:var(--warn)}.kpi.pp{border-left-color:var(--purple)}
-.kpi .l{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
-.kpi .v{font-size:24px;font-weight:700;margin-top:5px;letter-spacing:-.4px}
+.kpi .l{font-size:11px;color:var(--ink2);text-transform:uppercase;letter-spacing:.4px;font-weight:800}
+.kpi .v{font-size:25px;font-weight:760;margin-top:6px;letter-spacing:-.5px;line-height:1.15}
 .kpi.a .v{color:var(--a)}.kpi.b .v{color:var(--b)}.kpi.pos .v{color:var(--pos)}.kpi.neg .v{color:var(--neg)}.kpi.pp .v{color:var(--purple)}
-.kpi .s{font-size:11.5px;color:var(--ink3);margin-top:3px}
-.barrow{display:grid;grid-template-columns:130px 1fr 150px;gap:12px;align-items:center;margin:10px 0}
-.barrow .nm{font-size:12.5px;font-weight:600}
-.bar{height:18px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
-.fill{height:100%;border-radius:999px}
+.kpi .s{font-size:11.5px;line-height:1.5;color:var(--ink3);margin-top:5px}
+.barrow{display:grid;grid-template-columns:140px 1fr 160px;gap:13px;align-items:center;margin:11px 0}
+.barrow .nm{font-size:12.5px;font-weight:650}
+.bar{height:20px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.fill{height:100%;border-radius:999px;transition:width .4s ease}
 .fill.p{background:var(--a)}.fill.l{background:var(--purple)}.fill.an{background:var(--pos)}
 .barrow .dt{font-size:12px;color:var(--ink2);text-align:right}
-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:10px 11px;border-bottom:1px solid var(--line)}
 th:first-child,td:first-child{text-align:left}
-thead th{font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink2);border-bottom:2px solid var(--line2);font-weight:700}
+thead th{font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink2);border-bottom:2px solid var(--line2);font-weight:800}
+tbody tr:nth-child(even){background:color-mix(in srgb,var(--surface2) 60%,transparent)}
 tbody tr:hover{background:var(--surface2)}
 tfoot td{font-weight:700;border-top:2px solid var(--line2)}
-.pill{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;background:rgba(108,90,168,.16);color:var(--purple)}
-.note{background:var(--surface2);border:1px solid var(--line);border-radius:var(--r);padding:12px 15px;font-size:12px;color:var(--ink2);margin-top:13px;line-height:1.6}
+.pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700;background:rgba(100,85,164,.16);color:var(--purple)}
+.note{background:var(--surface2);border:1px solid var(--line);border-left:4px solid var(--line2);border-radius:var(--r);padding:13px 16px;font-size:12.5px;color:var(--ink2);margin-top:14px;line-height:1.65}
 .note b{color:var(--ink)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.foot{font-size:12px;color:var(--ink3);text-align:center;padding:18px 0 4px}
-.tl-item{position:relative;padding:0 0 15px 24px;border-left:2px solid var(--line)}
+.foot{font-size:12px;line-height:1.65;color:var(--ink3);text-align:center;padding:22px 6px 4px;max-width:980px;margin:0 auto}
+.tl-item{position:relative;padding:0 0 16px 26px;border-left:2px solid var(--line)}
 .tl-item:last-child{border-left-color:transparent}
-.tl-dot{position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--surface)}
-.tl-dot.ring{box-shadow:0 0 0 3px rgba(178,59,59,.22)}
-.tl-date{font-size:11.5px;font-weight:700;color:var(--ink2)}
-.tl-title{font-size:13.5px;margin-top:1px}.tl-future .tl-title{color:var(--ink2)}
-.tl-src{font-size:11px;color:var(--ink3)}
-.tl-today{font-size:11px;font-weight:700;color:var(--neg);margin:2px 0 8px 24px;letter-spacing:.3px}
-.tlp{border:1px solid var(--line2);border-radius:999px;padding:4px 11px;font-size:11.5px;cursor:pointer;background:var(--surface);color:var(--ink2);font-weight:600}
+.tl-dot{position:absolute;left:-7px;top:3px;width:13px;height:13px;border-radius:50%;border:2px solid var(--surface)}
+.tl-dot.ring{box-shadow:0 0 0 3px rgba(176,54,54,.22)}
+.tl-date{font-size:11.5px;font-weight:800;color:var(--ink2);letter-spacing:.2px}
+.tl-title{font-size:14px;margin-top:2px;line-height:1.5}.tl-future .tl-title{color:var(--ink2)}
+.tl-src{font-size:11px;color:var(--ink3);margin-top:1px}
+.tl-today{font-size:11px;font-weight:800;color:var(--neg);margin:4px 0 10px 26px;letter-spacing:.3px}
+.tlp{border:1px solid var(--line2);border-radius:999px;padding:5px 12px;font-size:11.5px;cursor:pointer;background:var(--surface);color:var(--ink2);font-weight:650}
 .tlp.on{color:#fff;border-color:transparent}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.cmp .firm{border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;background:var(--surface2)}
-.cmp .firm h4{font-size:14px;font-weight:700;margin-bottom:2px}
-.cmp .firm .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:999px;display:inline-block;margin-bottom:10px}
-.cmp .firm.wb{border-left:3px solid var(--a)}.cmp .firm.sg{border-left:3px solid var(--purple)}
-.cmp dl{display:grid;grid-template-columns:118px 1fr;gap:6px 10px;font-size:12.5px;margin:0}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.cmp .firm{border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;background:var(--surface2)}
+.cmp .firm h4{font-size:14.5px;font-weight:750;margin-bottom:3px}
+.cmp .firm .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 9px;border-radius:999px;display:inline-block;margin-bottom:11px}
+.cmp .firm.wb{border-left:4px solid var(--a)}.cmp .firm.sg{border-left:4px solid var(--purple)}
+.cmp dl{display:grid;grid-template-columns:120px 1fr;gap:7px 11px;font-size:12.8px;margin:0}
 .cmp dt{color:var(--ink2);font-weight:700}
 .cmp dd{margin:0;color:var(--ink)}
-.flag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px}
-.flag.good{background:rgba(47,125,86,.16);color:var(--pos)}
-.flag.bad{background:rgba(178,59,59,.15);color:var(--neg)}
-.flag.unk{background:rgba(154,107,0,.16);color:var(--warn)}
-@media(max-width:860px){.grid2{grid-template-columns:1fr}.barrow{grid-template-columns:1fr}.wrap{padding:14px 12px 30px}.cmp{grid-template-columns:1fr}}
+.flag{font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px}
+.flag.good{background:rgba(44,122,82,.16);color:var(--pos)}
+.flag.bad{background:rgba(176,54,54,.15);color:var(--neg)}
+.flag.unk{background:rgba(143,99,0,.16);color:var(--warn)}
+.act{border:1px solid var(--line);border-radius:var(--rlg);padding:17px 19px;background:var(--surface);box-shadow:var(--shadow)}
+.act+.act{margin-top:14px}
+.act.f1{border-left:4px solid var(--a)}.act.f2{border-left:4px solid var(--purple)}.act.f3{border-left:4px solid var(--b)}.act.f4{border-left:4px solid var(--neg)}
+.act .hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:4px}
+.act .hd h4{font-size:15.5px;font-weight:750}
+.act .forum{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink3)}
+.act dl{display:grid;grid-template-columns:122px 1fr;gap:8px 13px;font-size:13px;margin:11px 0 0}
+.act dt{color:var(--ink2);font-weight:700}
+.act dd{margin:0;color:var(--ink)}
+.act dd.fact{border-left:3px solid var(--pos);padding-left:9px}
+.act dd.assume{border-left:3px solid var(--warn);padding-left:9px}
+.act dd.risk{border-left:3px solid var(--neg);padding-left:9px}
+.act dd.next{border-left:3px solid var(--a);padding-left:9px;font-weight:650}
+.legend{display:flex;flex-wrap:wrap;gap:15px;font-size:11.5px;color:var(--ink2);margin-top:12px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:15px;height:3px;border-radius:2px;display:inline-block}
+.mtx-wrap{overflow-x:auto;margin-top:4px;border-radius:var(--r);border:1px solid var(--line)}
+.mtx{width:100%;border-collapse:collapse;font-size:12.8px;min-width:780px}
+.mtx th,.mtx td{text-align:left;vertical-align:top;padding:12px 13px;border-bottom:1px solid var(--line);line-height:1.55}
+.mtx thead th{font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;color:var(--ink2);background:var(--surface2);border-bottom:2px solid var(--line2);font-weight:800;position:sticky;top:54px}
+.mtx tbody tr:hover{background:color-mix(in srgb,var(--surface2) 70%,transparent)}
+.mtx td.it{font-weight:750;white-space:nowrap;color:var(--ink)}
+.mtx tr.key td{background:rgba(143,99,0,.06)}
+.mtx tr.key:hover td{background:rgba(143,99,0,.1)}
+.mtx .jon{color:var(--ink2)}
+.mtx .q{font-style:italic;color:var(--ink2)}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}.barrow{grid-template-columns:1fr}.wrap{padding:14px 13px 34px}.cmp{grid-template-columns:1fr}.act dl{grid-template-columns:1fr}.act dt{margin-top:6px}.head h1{font-size:22px}.mtx thead th{position:static}}
+@media(max-width:560px){
+  .wrap{padding:12px 11px 30px}
+  .head{padding:18px 16px}.head h1{font-size:20px}.head .sub{font-size:12.5px}.head .eyebrow{font-size:10.5px}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:6px;padding:9px 4px;margin:0 -4px 8px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;padding:9px 14px;font-size:13px;min-height:42px}
+  .kpis{grid-template-columns:1fr;gap:11px}
+  .controls{grid-template-columns:1fr 1fr;gap:11px}
+  .card{padding:15px 15px}
+  .kpi{padding:14px 15px}.kpi .v{font-size:22px}
+  .section{margin:20px 2px 10px;font-size:12px}
+  .cmp dl{grid-template-columns:1fr;gap:3px 0}.cmp dt{margin-top:8px}
+  #nweTbl,#costTbl{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .ctl input,.ctl select,.seg button,.tlp,.tab{min-height:42px}
+  textarea#notes{min-height:140px}
+}
+@media(max-width:380px){.controls{grid-template-columns:1fr}.barrow .dt{text-align:left}}
+@media print{.tabs,.seg,#tlFilter,#addBtn,#expBtn,#clrBtn,#impFile{display:none!important}.tab-panel{display:block!important;break-inside:avoid}.card,.act,.kpi,.mtx tr{break-inside:avoid}.section{break-after:avoid}body{font-size:11pt;background:#fff}.head{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
 <body>
-<h2 class="sr-only">Comcare dashboard: leave runway to LWOP, NWE with vs without posting allowance if liability accepted, net return after Slater and Gordon legal costs, and a Wearing Blairs vs Slater and Gordon firm comparison.</h2>
+<h2 class="sr-only">Tabbed dashboard: MPC review status and full s25 allegations-vs-defence narrative; Comcare claim economics; a shared case timeline; and a multi-front legal-actions tracker.</h2>
 <div class="wrap">
 
 <header class="head">
-  <div class="eyebrow">Comcare claim 1390598/1 · MPC review ROA-26-0097 · J. Saw · EL104 · as at 5 Jun 2026</div>
-  <h1>Comcare &amp; MPC Dashboard</h1>
-  <div class="sub">Two linked matters — the <b>Comcare</b> psychological-injury claim and the <b>MPC</b> review of the s25 early posting-cessation. Covers: case timeline · MPC status · leave runway to LWOP · NWE with vs without posting allowance if liability accepted · net return after Slater &amp; Gordon fixed fees · legal-representation comparison (WB vs S&amp;G).</div>
-  <div class="alert"><b>Key caution:</b> while the claim is rejected you live on your own leave. If accepted later, the pre-acceptance "back-payment" is largely realised as <b>leave re-credit, not new cash</b> — so weigh legal fees against actual cash benefit. Indicative only; not financial/legal advice.</div>
+  <div class="eyebrow">Comcare claim 1390598/1 · MPC review ROA-26-0097 · J. Saw · EL104 · as at 14 Jun 2026</div>
+  <h1>Comcare · MPC · Legal Dashboard</h1>
+  <div class="sub">Two linked matters and the wider legal options. Use the tabs: <b>MPC review</b> · <b>Comcare claim</b> economics · a shared <b>Timeline</b> (one source of truth) · and a <b>Legal actions</b> tracker for the fronts you may open against Austrade.</div>
+  <div class="alert"><b>Key caution:</b> while the Comcare claim is rejected you live on your own leave. If accepted later, the pre-acceptance "back-payment" is largely realised as <b>leave re-credit, not new cash</b> — so weigh legal fees against actual cash benefit. Indicative only; not financial or legal advice.</div>
 </header>
 
-<!-- SECTION 0 — CASE TIMELINE -->
-<div class="section">Case timeline — events to date</div>
-<div class="card">
-  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-    <div id="tlFilter" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-    <div class="seg" id="segView" style="max-width:200px"><button type="button" data-v="list" class="on">List</button><button type="button" data-v="table">Table</button></div>
-  </div>
-  <div id="timeline"></div>
-  <div style="border:1px dashed var(--line2);border-radius:var(--r);padding:14px 16px;margin-top:16px">
-    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink2);margin-bottom:10px">+ Add an event</div>
-    <div style="display:grid;grid-template-columns:140px 1fr 150px 160px auto;gap:10px;align-items:end">
-      <div class="ctl"><label for="addDate">Date</label><input type="date" id="addDate"></div>
-      <div class="ctl"><label for="addTitle">Event</label><input type="text" id="addTitle" placeholder="what happened"></div>
-      <div class="ctl"><label for="addCat">Category</label><select id="addCat"><option value="emp">Employment</option><option value="med">Medical</option><option value="com">Comcare</option><option value="leg">Legal</option><option value="lv">Leave/Pay</option><option value="dl">Deadline</option></select></div>
-      <div class="ctl"><label for="addSrc">Source</label><input type="text" id="addSrc" placeholder="email / letter / note"></div>
-      <button type="button" id="addBtn" style="padding:9px 16px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:13px;cursor:pointer">Add</button>
-    </div>
-    <div id="addMsg" style="font-size:11.5px;color:var(--ink3);margin-top:7px"></div>
-  </div>
-  <div class="note">Compiled from the case Drive folders (S&amp;G letters, Short Brief, reconsideration pack) and Gmail. Source conflicts flagged (unfit 12 Jan vs leave 19 Feb; claim 26 vs 27 Feb). <b>Added events and all inputs are saved in your browser</b> and persist when you reopen.</div>
-</div>
+<nav class="tabs" role="tablist" aria-label="Dashboard sections">
+  <button type="button" class="tab on" role="tab" data-t="mpc"><span class="tdot" style="background:var(--purple)"></span>MPC review</button>
+  <button type="button" class="tab" role="tab" data-t="comcare"><span class="tdot" style="background:var(--b)"></span>Comcare claim</button>
+  <button type="button" class="tab" role="tab" data-t="timeline"><span class="tdot" style="background:var(--a)"></span>Timeline</button>
+  <button type="button" class="tab" role="tab" data-t="actions"><span class="tdot" style="background:var(--neg)"></span>Legal actions<span class="tcount">4</span></button>
+</nav>
 
-<!-- MPC STATUS -->
+<section class="tab-panel on" id="tab-mpc" role="tabpanel">
 <div class="section">MPC review — status (runs parallel to Comcare)</div>
 <div class="card">
   <div class="kpis" style="margin-bottom:14px">
     <div class="kpi com" style="border-left-color:var(--b)"><div class="l">Comcare reconsideration</div><div class="v" id="mDeadline" style="font-size:18px"></div><div class="s" id="mDeadlineSub"></div></div>
     <div class="kpi pp"><div class="l">MPC target completion</div><div class="v" style="font-size:18px">30 Jun 2026</div><div class="s">internal aim</div></div>
     <div class="kpi pp"><div class="l">MPC formal due date</div><div class="v" id="mDue" style="font-size:18px">22 Jul 2026</div><div class="s" id="mDueSub"></div></div>
-    <div class="kpi a"><div class="l">MPC stage</div><div class="v" style="font-size:18px">Under review</div><div class="s">submissions in; MPC drafting</div></div>
+    <div class="kpi a"><div class="l">MPC stage</div><div class="v" style="font-size:18px">Under review</div><div class="s">secondary review; supp. filed 27 Apr</div></div>
   </div>
   <div style="font-size:13.5px;line-height:1.7;color:var(--ink2)">
-    <b style="color:var(--ink)">What the MPC is reviewing:</b> Austrade's <b>s25 decision (23 Dec 2025)</b> to cease the Vietnam posting early and redeploy to Adelaide. Primary (internal) review <b>upheld 15 Jan 2026</b> — no Code of Conduct breach finding, no sanction. Secondary review <b>filed 6 Mar 2026</b>, supplementary response <b>27 Apr 2026</b>.<br><br>
-    <b style="color:var(--ink)">Legally separate from Comcare:</b> the MPC tests whether the early cessation was the <b>correct/preferable and proportionate</b> employment decision; Comcare tests SRC Act liability (injury, causation, the s5A "reasonable administrative action" exclusion). <b>Same facts, different tests.</b><br><br>
-    <b style="color:var(--warn)">Interaction risk:</b> framing the MPC case as "unfair/disproportionate management" can be recycled by Comcare to argue the injury flowed from <b>reasonable administrative action</b> (defeating the claim). Keep the two narratives consistent. A favourable MPC outcome supports the Comcare "manner of action" argument — but don't conflate the tests.
+    <b style="color:var(--ink)">What the MPC is reviewing:</b> Austrade's <b>s25 decision (23 Dec 2025)</b>, by Chief People Officer Ben Wyers, to cease the Ho Chi Minh City posting early and redeploy Jon to Adelaide — on the basis that a <b>"pattern of poor judgment"</b> made him an <b>"unreasonable risk"</b> representing Austrade and Australia offshore. <b>No Code of Conduct breach was found and no sanction imposed.</b> Primary (internal) review by COO Melissa Woodburn <b>upheld the decision 15 Jan 2026</b>. Secondary review filed with the MPC <b>6 Mar 2026</b>; supplementary statement <b>27 Apr 2026</b>.<br><br>
+    <b style="color:var(--ink)">The test:</b> the MPC asks whether early cessation was the <b>correct or preferable, fair and proportionate</b> decision on the evidence — not whether any concern arose. Jon's case is not that nothing happened; it is that discrete, correctable matters could not rationally or proportionately bear the "unreasonable risk" conclusion, and that the process was not a genuine merits review.
   </div>
 </div>
 
-<!-- SECTION 1 — LEAVE RUNWAY -->
+<div class="section">The decision logic — and where it's challenged</div>
+<div class="card">
+  <div class="grid2">
+    <div class="act f3" style="margin:0">
+      <div class="hd"><h4>Austrade's chain</h4><span class="forum">23 Dec 2025 · 15 Jan 2026</span></div>
+      <dl>
+        <dt>Step 1</dt><dd>Eight matters raised in the 3 Dec preliminary inquiry (CPO Wyers).</dd>
+        <dt>Step 2</dt><dd>Aggregated into a <b>"pattern of poor judgment"</b> — repeated failure to "familiarise yourself with and follow key policy".</dd>
+        <dt>Step 3</dt><dd>That pattern = <b>"unreasonable risk"</b> to Austrade's/Australia's reputation offshore → <b>loss of confidence</b>.</dd>
+        <dt>Step 4</dt><dd>Remedy: <b>s25 early cessation</b> + redeploy to Adelaide + offer of integrity/decision-making training.</dd>
+        <dt>Upheld</dt><dd>COO Woodburn, 15 Jan: <span class="q">"My view is consistent with that of Ben"</span>; Jon's added material "often inconsistent".</dd>
+      </dl>
+    </div>
+    <div class="act f1" style="margin:0">
+      <div class="hd"><h4>Jon's central answer</h4><span class="forum">6 Mar · 27 Apr 2026</span></div>
+      <dl>
+        <dt>Gap</dt><dd class="risk">The unexplained <b>evaluative leap</b> from discrete, correctable concerns to early cessation. No threshold, risk pathway, or likelihood of harm is exposed.</dd>
+        <dt>Narrowing</dt><dd class="fact">On 15 Apr 2026 the MPC delegate confirmed Austrade's <b>key factors are only Items 1, 2, 4, 5 and 7</b> — Items 3, 6 and 8 dropped from the core.</dd>
+        <dt>Weight</dt><dd>Items 4 and 5 are one cash-payment issue (not two); Item 7 was finite and remediated; Items 1–2 support guidance, not risk.</dd>
+        <dt>Remedy</dt><dd class="next">Proportionate response was counselling, warning, retraining, written direction or supervision — not removal from post.</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<div class="section">Allegations vs defence — matter by matter</div>
+<div class="card">
+  <div style="font-size:12.5px;color:var(--ink2);margin-bottom:10px">Eight matters from the 3 Dec 2025 preliminary inquiry. <span class="flag unk">Key factor</span> = relied on for the s25 decision (per 15 Apr scope). <span class="flag good">Dropped from key</span> = no longer a core factor. Amber-tinted rows are the live key factors.</div>
+  <div class="mtx-wrap">
+  <table class="mtx">
+    <thead><tr><th style="width:8%">Item</th><th style="width:34%">Austrade's allegation</th><th style="width:42%">Jon's response</th><th style="width:16%">Status</th></tr></thead>
+    <tbody>
+      <tr class="key">
+        <td class="it">1 · Third-Party Note</td>
+        <td>Feb 2024, on personal travel, asked a DFAT/Austrade official to write a Third-Party Note saying he was visiting the Bangkok Embassy <span class="q">"when in fact \[he\] were not"</span>.</td>
+        <td class="jon">Pre-posting personal travel (1 Mar 2024) — no nexus to offshore risk. Only enquired after the Royal Thai Embassy Canberra said a letter might be needed; Austrade declined, he accepted at once. <b>No note issued, no assistance, no benefit.</b> He <b>did</b> visit the embassy (photo + visitor records). CPO's own 23 Dec script: <span class="q">"I can accept this was part of your learning curve"</span>, "had not started at post", "limited exposure". Known to management by Jul 2025; elevated ~21 months later.</td>
+        <td><span class="flag unk">Key factor</span><br><span style="font-size:11px;color:var(--ink3)">but qualified by Austrade's own script</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">2 · Reunion travel</td>
+        <td>Sought approval for a costlier Adelaide fare but booked Milan; <b>lacked transparency</b> — did not flag Milan until McDonald noticed it on the final TRN, leading her to approve a fare far above the cheapest Milan option.</td>
+        <td class="jon">First time using the reunion process. On Corporate Services adviser Duong Nguyen's advice, lodged an Adelaide TRF (6 May) to secure travel, changeable later. Changed to Italy Sat 10 May and <b>immediately resubmitted through the formal workflow</b> — recorded in writing in the TRF system, not hidden. McDonald approved (12 May), later said she hadn't noticed the change. He explained, cooperated, reversed/adjusted, re-approved same day. Third-country reunion is permitted; <b>no extra cost to the Commonwealth</b>. Apology ≠ admission (medical evidence: under stress he over-apologises to de-escalate).</td>
+        <td><span class="flag unk">Key factor</span><br><span style="font-size:11px;color:var(--ink3)">framed as comms/approval issue</span></td>
+      </tr>
+      <tr>
+        <td class="it">3 · Corp card personal use</td>
+        <td>Used the corporate card for personal matters — e.g. a Feb 2025 acquittal breach for medical charges.</td>
+        <td class="jon">Inadvertent personal use; disclosed, repaid, not repeated. CEI 5 treats inadvertent personal use administratively. No dishonesty or gain.</td>
+        <td><span class="flag good">Dropped from key</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">4 · Cash before vendor check</td>
+        <td>Withdrew cash from the corporate card <b>before knowing whether the vendor would accept cards</b>.</td>
+        <td class="jon" rowspan="2">Assess 4 and 5 <b>together</b> — same context, don't double-count. <b>CEI 5 did not ban ATM cash advances</b>: it required the card "wherever VISA … is accepted" and expressly allowed cash "in unavoidable circumstances" incl. where "the merchant does not accept your card", subject to acquittal. Transactions were <b>visible through the ordinary acquittal pathway and line-manager approved</b>, in a cash-reliant Vietnam/Cambodia environment. External witness (Teo) saw his card fail at Häagen-Dazs → paid cash. <b>No loss, audit failure, inflated/falsified claim, concealment or personal gain.</b> Practice ceased once management clarified.</td>
+        <td><span class="flag unk">Key factor</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">5 · Cash to reimburse self</td>
+        <td>Withdrew cash from the corporate card <b>to reimburse himself</b> for work expenses instead of paying the expense on the card.</td>
+        <td><span class="flag unk">Key factor</span></td>
+      </tr>
+      <tr>
+        <td class="it">6 · Leave management</td>
+        <td>Failed to manage leave — claiming days back for working while on leave, and swapping out Vietnamese public holidays while holding an excess annual-leave balance.</td>
+        <td class="jon">Context: under Ball, only 2 days' annual leave approved in 9 months and post-surgery sick leave refused; under McDonald he proactively cut annual leave by <b>36 days over 10 months</b>. The public-holiday swap had management approval to deliver the May 2025 Smart Cities Landing Pad. Managerial discretion + remediation — not neglect or misuse.</td>
+        <td><span class="flag good">Dropped from key</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">7 · Email to personal Gmail</td>
+        <td>Oct/Nov 2025: tried to send an <b>OFFICIAL: Sensitive</b> email to his Gmail; when blocked at the gateway, <b>changed the subject, reclassified and resent</b> = security breach. 23 Dec decision called this <b>active circumvention</b> with "no plausible explanation" for using a personal account — the example Austrade leaned on hardest.</td>
+        <td class="jon"><b>Acknowledged.</b> Forwarded work emails to Gmail, one marked OFFICIAL: Sensitive — an info-handling lapse, not contested. The disclosed spreadsheet shows <b>mixed UNOFFICIAL/OFFICIAL emails, only one OFFICIAL: Sensitive</b>. No classified compromise, onward disclosure, external harm or recurrence. He deleted the email, emptied deleted items, re-read the policy, and did not repeat it. Proportionate response: warning, retraining or a written s13(5) direction — not removal.</td>
+        <td><span class="flag unk">Key factor</span><br><span style="font-size:11px;color:var(--ink3)">finite + remediated</span></td>
+      </tr>
+      <tr>
+        <td class="it">8 · Conflict of interest</td>
+        <td>In the current CoI declaration, <b>failed to disclose</b> a potential conflict (real-estate investments); McDonald returned the form, aware of an investment property.</td>
+        <td class="jon">CoI policy is <b>risk-based and discretionary</b> — the employee judges whether an investment "could or could be seen to impact" duties. He assessed his Australian property had no connection to Vietnam duties → initially "No". On request he amended it with <b>full disclosure</b>. No unmanaged conflict, no mitigation plan required; already disclosed via AGSVA security clearance. An assessment difference, not concealment.</td>
+        <td><span class="flag good">Dropped from key</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note"><b>Aggregation without a threshold:</b> the matters are discrete, factually unrelated and span different years and policy domains. A "pattern" supporting ongoing risk needs escalation, repetition after warning, or systemic disregard. Across every item: <b>none involved dishonesty or personal gain, none caused external harm, none continued after clarification, none escalated.</b> No external complaint was made.</div>
+</div>
+
+<div class="section">Jon's systemic challenges to the process</div>
+<div class="card">
+  <div class="grid2">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">Procedural fairness</div>
+      <div style="font-size:12.5px;color:var(--ink2);line-height:1.6">A <b>shifting case</b>: 8 items in December, but the first clear statement that only Items 1, 2, 4, 5, 7 were the "key factors" came on <b>15 Apr 2026</b> — so the true case to answer kept moving. The primary review showed <b>no genuine item-by-item reconsideration</b> ("My view is consistent with that of Ben"). <b>Apprehended bias:</b> line manager McDonald raised and escalated the matters, sat in the review as "support", and was consulted by the reviewer just before the meeting. <b>Withheld material:</b> attachments N, P, R, W, X, AE, AF not provided in workable form — yet the cover page says Attachment X was relied on at both decision stages.</div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px">Proportionality</div>
+      <div style="font-size:12.5px;color:var(--ink2);line-height:1.6">A subjective <b>loss of confidence is not enough</b> — it needed an objective account of the reputational harm, its likelihood, who was exposed, and why it couldn't be managed in post. <b>No structured evaluation of less-intrusive alternatives</b> (counselling, warning, retraining, written directions, pre-approval, enhanced supervision, continued posting with oversight) appears in the papers. Early cessation is one of the most serious non-misconduct options — chosen with no Code of Conduct finding. <b>Implementation during certified incapacity</b> (device recovery, compressed uplift) reinforces that the response wasn't calibrated to the stated risk.</div>
+    </div>
+  </div>
+  <div class="note"><b>Differential treatment:</b> Jon was the only post-leadership member of Asian ethnicity. He does <b>not</b> allege discriminatory intent, but asks why significant consequences were imposed without transparent comparative reasoning.</div>
+</div>
+
+<div class="section">Evidence on representational competence</div>
+<div class="card">
+  <div style="font-size:12.5px;color:var(--ink2);line-height:1.6;margin-bottom:10px">Six external/role witness statements (plus spouse Candice Lin, Annex P) go to the narrow point that Jon was <b>not</b> a reputational risk in market — directly contradicting the s25 rationale. Filed as Annexures P, Q, R, S, T, U, V:</div>
+  <div class="kpis">
+    <div class="kpi a"><div class="l">Eliza Chui · Annex Q</div><div class="v" style="font-size:14px">TIC role demands</div><div class="s">predecessor; the role's after-hours representational reality</div></div>
+    <div class="kpi a"><div class="l">Susan Corbisiero · Annex V</div><div class="v" style="font-size:14px">Former colleague</div><div class="s">capable, professional; also saw Ball pressure + decline</div></div>
+    <div class="kpi a"><div class="l">Phu · Le · Kong · Annex R,S,U</div><div class="v" style="font-size:14px">Industry / InnoEx 2024</div><div class="s">external professional contacts: professional, prepared, above-and-beyond in market</div></div>
+    <div class="kpi a"><div class="l">Meekee Teo · Annex T</div><div class="v" style="font-size:14px">Häagen-Dazs incident</div><div class="s">card failed → paid cash; corroborates Items 4–5</div></div>
+  </div>
+  <div class="note"><b>Health backdrop (context, not excuse):</b> emergency surgery in Thailand Aug 2024; directed back to duties against medical advice (incl. InnoEx on 22 Aug); manager Ball's reported <span class="q">"you know I can end your career"</span>; HR concerns raised with colleague Chris Morley Nov 2024. Diagnosis F43 — reaction to severe stress / adjustment disorder; symptoms began 23 Dec 2025. Medical evidence notes a stress response of accepting blame and over-apologising — relevant to how his contemporaneous apologies should be read.</div>
+</div>
+
+<div class="section">Relief sought · and the Comcare link</div>
+<div class="card">
+  <div style="font-size:13px;line-height:1.7;color:var(--ink2)">
+    <b style="color:var(--ink)">Primary:</b> set aside the 23 Dec 2025 decision; correct HR, mobility and posting records so they don't state or imply "unreasonable risk"; record any maintained concern only as resolved by guidance, correction, warning or training; produce the withheld attachments.<br>
+    <b style="color:var(--ink)">Alternative:</b> vary the decision to remove the "unreasonable risk" characterisation and reduce any continuing response to the least-intrusive proportionate measure, with no record that prejudices future posting eligibility or APS progression.
+  </div>
+  <div class="note"><b style="color:var(--warn)">Cross-matter pivot (read with the Legal actions tab):</b> the MPC tests whether early cessation was proportionate; Comcare tests SRC Act liability and the s5A "reasonable administrative action" exclusion — <b>same facts, different tests.</b> A finding that the cessation was <b>disproportionate</b> weakens Austrade's "reasonable administrative action" shield in Comcare and supports a Fair Work adverse-action argument. Keep the narratives consistent: don't let an MPC "unfair management" framing be recycled by Comcare against you, and don't conflate the tests.</div>
+</div>
+</section>
+
+<section class="tab-panel" id="tab-comcare" role="tabpanel">
+
+<div class="section">The claim — status &amp; the one issue that decides it</div>
+<div class="card">
+  <div style="font-size:13.5px;line-height:1.7;color:var(--ink2);margin-bottom:14px">
+    Claim <b>1390598/1</b>, lodged <b>26/27 Feb 2026</b> for a psychological injury (major depressive disorder + anxiety). <b style="color:var(--neg)">Declined 7 May 2026</b> by the Comcare delegate. Under <b>s14 of the SRC Act</b> a claim needs five things — and Comcare accepted <b>four of them</b>. The whole case turns on the fifth: the <b>s5A "reasonable administrative action" exclusion</b>.
+  </div>
+  <div class="kpis">
+    <div class="kpi pos"><div class="l">a · Employee</div><div class="v" style="font-size:15px">Satisfied</div><div class="s">since 15 Aug 2016</div></div>
+    <div class="kpi pos"><div class="l">b · Notice</div><div class="v" style="font-size:15px">Satisfied</div><div class="s">26 Feb 2026</div></div>
+    <div class="kpi pos"><div class="l">c · Ailment + incapacity</div><div class="v" style="font-size:15px">Satisfied</div><div class="s">unfit 17 Feb–17 Mar</div></div>
+    <div class="kpi pos"><div class="l">d · Work significantly contributed</div><div class="v" style="font-size:15px">Satisfied</div><div class="s">conceded by Comcare</div></div>
+    <div class="kpi neg"><div class="l">e · Exclusion (s5A)</div><div class="v" style="font-size:15px">Applied → declined</div><div class="s">the entire battleground</div></div>
+  </div>
+  <div class="note"><b>Why this is a strong posture:</b> Comcare is not saying Jon wasn't unwell or that work wasn't the cause — it <b>conceded both</b>. It only found that the injury flowed from <b>reasonable administrative action taken in a reasonable manner</b> (the 3 Dec inquiry + 23 Dec posting cessation), which the SRC Act carves out. Win the s5A argument and liability follows. Reconsideration deadline <b>extended to 22 Jun 2026</b>; then ART.</div>
+</div>
+
+<div class="section">The s5A battleground</div>
+<div class="card">
+  <div class="grid2">
+    <div class="act f3" style="margin:0">
+      <div class="hd"><h4>Comcare's exclusion reasoning</h4><span class="forum">Determination 7 May 2026</span></div>
+      <dl>
+        <dt>Cause</dt><dd>The condition resulted <b>only</b> from two acts: the <b>3 Dec preliminary inquiry</b> and the <b>23 Dec decision to cease the posting</b>.</dd>
+        <dt>"But for"</dt><dd>Without those actions, employment would not have significantly contributed — onset placed <b>on/after 30 Dec</b> (first treatment).</dd>
+        <dt>Administrative</dt><dd>Defined to include performance appraisal, formal/informal counselling, and acts about a transfer/benefit.</dd>
+        <dt>Reasonable</dt><dd>Inquiry was reasonable to address conduct; cessation was per Austrade's policies.</dd>
+        <dt>Reasonable manner</dt><dd>Prior informal discussions; offered a support person + EAP; invited a response before deciding (procedural fairness).</dd>
+      </dl>
+    </div>
+    <div class="act f1" style="margin:0">
+      <div class="hd"><h4>Jon's reconsideration theory</h4><span class="forum">Request lodged · draft 6 Jun 2026</span></div>
+      <dl>
+        <dt>Anchor</dt><dd class="fact">Don't reargue the injury — Comcare <b>conceded</b> ailment, incapacity and significant work contribution. The only question is whether the exclusion reaches <b>all</b> the causative factors.</dd>
+        <dt>Too narrow</dt><dd class="risk">Comcare collapsed the whole case into two December events and ignored <b>cumulative stressors from July 2024</b> and the <b>January 2026 implementation</b>.</dd>
+        <dt>Test each factor</dt><dd>Each causative factor must be separately tested (Martin/Lim) — administrative? reasonable? reasonable manner? Two acts don't capture all the work contribution.</dd>
+        <dt>Outcome</dt><dd class="next">Set aside + accept liability; alternatively, get medical clarification on cumulative onset and Jan aggravation, and obtain Austrade's WHS/psychosocial records.</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<div class="section">Comcare's findings vs Jon's reconsideration answer</div>
+<div class="card">
+  <div style="font-size:12.5px;color:var(--ink2);margin-bottom:10px"><span class="flag good">Accepted</span> = already in Jon's favour. <span class="flag unk">Contested</span> = live reconsideration ground. Amber rows are where the claim is won or lost.</div>
+  <div class="mtx-wrap">
+  <table class="mtx">
+    <thead><tr><th style="width:20%">Issue</th><th style="width:34%">Comcare's finding (7 May)</th><th style="width:34%">Jon's reconsideration answer</th><th style="width:12%">Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="it">Ailment + incapacity</td>
+        <td>Satisfied — major depression / acute stress reaction; certified unfit 17 Feb–17 Mar 2026.</td>
+        <td class="jon">Agreed — use as the <b>anchor</b>. A diagnosable condition, medication, ongoing symptoms, no non-employment stressor.</td>
+        <td><span class="flag good">Accepted</span></td>
+      </tr>
+      <tr>
+        <td class="it">Work contribution</td>
+        <td>Satisfied — employment <b>significantly contributed</b> (Drs Srivastava + de Seixas; no non-employment stressors; no pre-existing condition).</td>
+        <td class="jon">Agreed — and Comcare must give this concession its weight rather than letting the exclusion erase it.</td>
+        <td><span class="flag good">Accepted</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">Causation scope</td>
+        <td>The condition resulted <b>only</b> from the 3 Dec inquiry and the 23 Dec posting decision.</td>
+        <td class="jon"><b>Too narrow.</b> Ignores cumulative stressors from <b>July 2024</b> — workplace conflict, managerial conduct (Ball), scrutiny, loss of trust — and the January 2026 relocation. Not every causative factor is an "administrative action".</td>
+        <td><span class="flag unk">Contested — core</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">Onset date</td>
+        <td>Onset <b>on/after 30 Dec 2025</b>, being the first treatment date.</td>
+        <td class="jon"><b>Confuses first treatment with onset.</b> Symptoms can precede treatment; assess as a progression. Dr Srivastava dates the injury to <b>3 Dec 2025</b>; de Seixas links it to the HR investigation + threatened termination.</td>
+        <td><span class="flag unk">Contested</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">s5A · "reasonable" + proportionate</td>
+        <td>The inquiry and posting cessation were reasonable and taken per Austrade policy.</td>
+        <td class="jon"><b>Proportionality not shown.</b> No evidence Austrade weighed less-intrusive options (warning, written direction, training, supervision, monitored continuation, medical assessment first). <i>Ties directly to the MPC proportionality case.</i></td>
+        <td><span class="flag unk">Contested</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">s5A · "reasonable manner"</td>
+        <td>Satisfied because Jon had a support person, EAP access, and a chance to respond before the decision.</td>
+        <td class="jon"><b>A chance to respond ≠ reasonable manner.</b> The <b>January 2026 implementation</b> — device recovery, same-day uplift, compressed/aggressive comms — happened <b>after</b> he was certified unwell and was never assessed against his known medical vulnerability. <b>Strongest ground.</b></td>
+        <td><span class="flag unk">Contested — key</span></td>
+      </tr>
+      <tr class="key">
+        <td class="it">Jan 2026 as a separate factor</td>
+        <td>Not assessed on its own terms — folded into "procedural fairness was afforded".</td>
+        <td class="jon">The relocation implementation is a <b>distinct causative/aggravating factor</b> that may sit <b>outside</b> the exclusion (non-administrative, or not done in a reasonable manner). Best evidence: the 27 Jan relocation email chain.</td>
+        <td><span class="flag unk">Contested</span></td>
+      </tr>
+      <tr>
+        <td class="it">WHS / psychosocial duty</td>
+        <td>Not addressed.</td>
+        <td class="jon">Once aware of his deterioration, Austrade carried a <b>safety/wellbeing duty separate</b> from enforcing the posting decision. Request Austrade's WHS, hazard, psychosocial-risk and notification records.</td>
+        <td><span class="flag unk">Raised</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note"><b>Strategy (from Jon's own playbook):</b> lead on <b>causation, cumulative injury and reasonable manner</b> — <b>not</b> "Austrade had no right to investigate" (that recasts the claim as mere distress from management action and feeds the exclusion). Accept that concerns were raised; argue the exclusion was applied too broadly. Don't say "the email issue was minor" — say seriousness doesn't answer causation, proportionality or reasonable manner. <b>Also test the condition label:</b> the determination excludes "<b>Acute Stress Reaction</b>", yet the diagnosed, incapacitating condition (Dr Srivastava and Austrade's own IME, Dr Gutkin) is <b>major depressive disorder</b> — if the excluded condition isn't the disabling one, press that gap.</div>
+</div>
+
+<div class="section">Medical evidence — all point one way</div>
+<div class="card">
+  <div class="kpis">
+    <div class="kpi pos"><div class="l">Dr de Seixas · psychiatrist</div><div class="v" style="font-size:14px">10 Jan 2026</div><div class="s">acute stress reaction; tied to HR investigation + threatened termination</div></div>
+    <div class="kpi pos"><div class="l">Dr Srivastava · GP</div><div class="v" style="font-size:14px">13 Apr 2026</div><div class="s">major depression; work factors caused onset; no non-work stressor; injury date 3 Dec</div></div>
+    <div class="kpi a"><div class="l">Dr Gutkin · employer IME</div><div class="v" style="font-size:14px">23 Apr 2026</div><div class="s">Austrade's own psychiatrist: MDD + functional incapacity</div></div>
+    <div class="kpi b"><div class="l">Dr Muffett · employer OH</div><div class="v" style="font-size:14px">20 May 24 → 24 Feb 26</div><div class="s">same Austrade provider (Sonic HealthPlus): clean baseline → depression + anxiety, not fit to work (Annex A/B)</div></div>
+    <div class="kpi pos"><div class="l">No pre-existing</div><div class="v" style="font-size:14px">Clean baseline</div><div class="s">no relevant prior psychiatric condition</div></div>
+  </div>
+  <div class="note"><b>The employer's own IME helps Jon:</b> Dr Gutkin (arranged by Austrade) confirms major depressive disorder and functional incapacity — so the <b>severity and work-link aren't in dispute</b>. That keeps the fight on the s5A exclusion, exactly where Jon's case is strongest. Needed addendum: a doctor distinguishing <b>onset from first treatment</b> and confirming the January implementation aggravated an already-present condition. <b>Before/after (Austrade's own occ-health provider):</b> Dr Muffett, Sonic HealthPlus recorded a <b>clean baseline on 20 May 2024</b> (no meds, no history, no allergies) and <b>depression + anxiety, not fit to work on 24 Feb 2026</b> — same examiner both ends, objective evidence of deterioration across the posting (Annexures A &amp; B).</div>
+</div>
+
+<div class="section">Relief sought · and the cross-matter link</div>
+<div class="card">
+  <div style="font-size:13px;line-height:1.7;color:var(--ink2)">
+    <b style="color:var(--ink)">Primary:</b> set aside the 7 May 2026 determination and accept liability.<br>
+    <b style="color:var(--ink)">Alternative:</b> seek further medical clarification (cumulative onset before 3 Dec; whether Jan 2026 aggravated the condition; whether Jon would have been injured absent the two identified acts) and obtain Austrade's WHS/psychosocial-risk records.<br>
+    <b style="color:var(--ink)">Then:</b> if the reconsideration affirms the decline, appeal to the <b>ART</b> — Slater &amp; Gordon act on the Comcare matter through to ART (see economics below).
+  </div>
+  <div class="note"><b style="color:var(--warn)">Cross-matter pivot:</b> the Comcare exclusion and the MPC case share the same fact — was the early cessation <b>reasonable and proportionate, taken in a reasonable manner?</b> A win on the <b>MPC</b> (disproportionate) or a <b>Fair Work adverse-action</b> finding directly undercuts Comcare's s5A shield. Keep the narratives aligned; don't let an MPC "unfair management" framing be turned around to prove the injury was just distress from administrative action. See the <b>Legal actions</b> tab.</div>
+</div>
+
+<div class="section">Claim economics — runway, NWE &amp; legal cost</div>
+
 <div class="section">1 · Leave runway — how long until LWOP</div>
 <div class="card">
   <div class="controls" style="margin-bottom:16px">
@@ -159,7 +457,6 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
   <div class="note"><b>Now factored:</b> (1) <b>accruals</b> — annual + personal keep accruing while on paid leave (EA cl 37/39, ~40 d/yr combined; "+N" shown on total days); (2) <b>SA public holidays</b> paid, not drawn (King's B'day 8 Jun, Labour Day 5 Oct, Christmas, Boxing/Proclamation, NYD); (3) <b>Dec close-down</b> — 3 paid days between Christmas &amp; New Year, no deduction (EA cl 35(4)). Waterfall: personal → LSL (vests 16 Aug, your 10-yr mark) → annual. Half-pay LSL doubles duration, halves income. Confirm with Pay that leave accrues during paid absence and LSL is re-credited on Comcare acceptance (EA cl 56 auto-re-credits personal/carer's only).</div>
 </div>
 
-<!-- SECTION 2 — NWE -->
 <div class="section">2 · NWE if Comcare accepts — with vs without posting allowance</div>
 <div class="card">
   <div class="controls" style="margin-bottom:16px">
@@ -181,7 +478,6 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
   <div class="note"><b>s8</b> NWE includes allowances unless "special expenses" — B only holds if injury dated in-posting; allowance ends when the posting would have (1 Jul 2027), then B reverts to onshore. <b>s19(2)</b> first 45 wks 100%; <b>s19(3)</b> after = 75/80/85/90/95%. Back-payment for the period you were on paid leave is realised as <b>leave re-credit</b>, not double cash.</div>
 </div>
 
-<!-- SECTION 3 — COST vs RETURN -->
 <div class="section">3 · Slater &amp; Gordon cost vs return (No Win No Fee, verified from signed agreement)</div>
 <div class="card">
   <div class="controls" style="margin-bottom:16px">
@@ -213,47 +509,181 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
   </div>
 </div>
 
-<!-- SECTION 4 — FIRM COMPARISON -->
-<div class="section">4 · Legal representation — Wearing Blairs vs Slater &amp; Gordon</div>
+<div class="section">4 · Legal representation — Slater &amp; Gordon engaged (Comcare)</div>
 <div class="card">
-  <div class="alert" style="background:rgba(178,59,59,.12);border:1px solid rgba(178,59,59,.3);color:var(--ink);margin-top:0;margin-bottom:16px"><b style="color:var(--neg)">Scope mismatch — the two offers are not like-for-like.</b> WB acts on the <b>reconsideration now</b>; S&amp;G defers to the <b>ART stage</b> and won't touch the reconsideration. Reconsideration is due <b>6 Jun 2026</b> (extended to <b>22 Jun 2026</b>).</div>
+  <div class="alert" style="background:rgba(47,125,86,.12);border:1px solid rgba(47,125,86,.3);color:var(--ink);margin-top:0;margin-bottom:16px"><b style="color:var(--pos)">Engaged.</b> Slater &amp; Gordon are now formally acting on the <b>Comcare matter</b> — costs agreement executed via DocuSign <b>9 Jun 2026</b> (matter S+G-ACTIVE · M691979). <b>Wearing Blairs (Donald Blairs) declined</b> — their 4 Jun retainer was not taken up. The <b>MPC review is a separate process</b>: MPC notified of S&amp;G's Comcare representation (12 Jun), and Jon continues to correspond directly on the MPC review.</div>
   <div class="cmp">
-    <div class="firm wb">
-      <h4>Wearing Blairs (WB)</h4>
-      <span class="tag" style="background:rgba(58,110,165,.16);color:var(--a)">Acts now · reconsideration</span>
+    <div class="firm sg">
+      <h4>Slater &amp; Gordon — engaged</h4>
+      <span class="tag" style="background:rgba(47,125,86,.16);color:var(--pos)">Acting · Comcare matter</span>
       <dl>
-        <dt>Contact</dt><dd>Donald Blairs, Adelaide · referral from Simon Callaghan</dd>
-        <dt>Scope</dt><dd>Draft + <b>file the reconsideration itself</b>, starting now</dd>
-        <dt>Deadline</dt><dd><span class="flag good">files in time</span> aims to lodge by/around 22 Jun (extended)</dd>
-        <dt>Fee model</dt><dd><span class="flag unk">UNKNOWN</span> retainer PDF (4 Jun) — fee schedule not yet read</dd>
-        <dt>Disbursements</dt><dd><span class="flag unk">unknown</span> pending retainer review</dd>
-        <dt>Process</dt><dd>Sign retainer → Donald acts immediately. No union referral needed</dd>
+        <dt>Contacts</dt><dd>Connie Iarossi · Claire Humphries (Associate) · Anthony Baker · Comcare dept</dd>
+        <dt>Status</dt><dd><span class="flag good">Signed 9 Jun 2026</span> costs agreement executed (DocuSign); matter active</dd>
+        <dt>Fee model</dt><dd><span class="flag good">No Win No Fee</span> $0 professional fees on a loss; cap bites only on lump sums</dd>
+        <dt>Disbursements</dt><dd>CPSU terms — <b>S&amp;G fund, repaid from settlement</b> (per amended agreement)</dd>
+        <dt>Reconsideration</dt><dd><span class="flag unk">CONFIRM</span> who lodges the 22 Jun reconsideration — clarify S&amp;G scope vs self-lodge</dd>
       </dl>
     </div>
-    <div class="firm sg">
-      <h4>Slater &amp; Gordon (S&amp;G)</h4>
-      <span class="tag" style="background:rgba(108,90,168,.16);color:var(--purple)">ART stage only · No Win No Fee</span>
+    <div class="firm wb" style="opacity:.7">
+      <h4>Wearing Blairs — declined</h4>
+      <span class="tag" style="background:rgba(178,59,59,.14);color:var(--neg)">Not proceeding</span>
       <dl>
-        <dt>Contact</dt><dd>Connie Iarossi / Claire Humphries (Comcare dept)</dd>
-        <dt>Scope</dt><dd><b>Will not</b> do reconsideration. You self-lodge; they act at ART</dd>
-        <dt>Deadline</dt><dd><span class="flag good">covered</span> sought extension to 22 Jun; you self-lodge</dd>
-        <dt>Fee model</dt><dd><span class="flag good">No Win No Fee</span> $0 pro fees on a loss; cap bites only on lump sums</dd>
-        <dt>Disbursements</dt><dd>CPSU terms (3 Jun): <b>S&amp;G funds, repaid from settlement</b>. Standard (2 Jun): <b>$4,500 trust you bear</b></dd>
-        <dt>Process</dt><dd>Needs <b>CPSU union referral</b>; <b>closes file</b> until Reviewable Decision, then reopens at ART</dd>
+        <dt>Contact</dt><dd>Donald Blairs, Adelaide · referral from Simon Callaghan</dd>
+        <dt>Offer</dt><dd>Terms sent 4 Jun; offered to draft + file the reconsideration</dd>
+        <dt>Outcome</dt><dd><span class="flag bad">Declined</span> retainer not taken up — proceeding with S&amp;G instead</dd>
+        <dt>Fee model</dt><dd>Retainer PDF (4 Jun); firm not engaged</dd>
       </dl>
     </div>
   </div>
   <div class="kpis" style="margin-top:14px">
-    <div class="kpi a"><div class="l">Best on the deadline</div><div class="v" style="font-size:18px">Wearing Blairs</div><div class="s">handles end-to-end reconsideration</div></div>
-    <div class="kpi pp"><div class="l">Best documented downside</div><div class="v" style="font-size:18px">S&amp;G · CPSU</div><div class="s">$0 fees on loss, funds disbursements</div></div>
-    <div class="kpi warn"><div class="l">Open S&amp;G questions</div><div class="v" style="font-size:18px">3 unanswered</div><div class="s">fees trigger · cap · scope (extension secured)</div></div>
-    <div class="kpi neg"><div class="l">Blocking unknown</div><div class="v" style="font-size:18px">WB fee schedule</div><div class="s">PDF unread — can't fully compare</div></div>
+    <div class="kpi pos"><div class="l">Representation</div><div class="v" style="font-size:18px">S&amp;G engaged</div><div class="s">Comcare matter · signed 9 Jun</div></div>
+    <div class="kpi pp"><div class="l">Cost exposure</div><div class="v" style="font-size:18px">No Win No Fee</div><div class="s">$0 fees on loss; disbursements funded</div></div>
+    <div class="kpi neg"><div class="l">Nearest deadline</div><div class="v" style="font-size:18px">22 Jun 2026</div><div class="s">reconsideration — confirm who lodges</div></div>
+    <div class="kpi warn"><div class="l">MPC review</div><div class="v" style="font-size:18px">Self-managed</div><div class="s">separate; S&amp;G notified to MPC 12 Jun</div></div>
   </div>
-  <div class="note"><b>Recommendation (not mutually exclusive):</b> (1) <b>Let WB file the reconsideration by 22 Jun</b> — the extended deadline buys breathing room; (2) <b>lock S&amp;G's CPSU No Win No Fee for the ART stage</b>, where the real money and risk sit; (3) <b>get WB's fee schedule</b> — if WB matches No Win No Fee <i>and</i> handles the reconsideration, one firm end-to-end beats splitting. <b>Next action:</b> confirm Comcare's extension acceptance (email/official confirmation), and parse the WB retainer PDF. Source: Gmail threads (WB 28 May–4 Jun; S&amp;G 14 May–4 Jun) + <code>Legal-Costs-vs-Recovery.md</code>.</div>
+  <div class="note"><b>Next action:</b> confirm in writing with S&amp;G (Claire Humphries / Connie Iarossi) <b>who lodges the reconsideration by 22 Jun</b> — S&amp;G on the file, or Jon self-lodging with S&amp;G support — and that Comcare has accepted the deadline extension in writing. The economics in Section 3 apply to the S&amp;G No Win No Fee engagement through the ART stage. Source: Gmail (S&amp;G 14 May–13 Jun; DocuSign completed 9 Jun; WB 28 May–4 Jun) + <code>Legal-Costs-vs-Recovery.md</code>.</div>
+</div>
+</section>
+
+<section class="tab-panel" id="tab-timeline" role="tabpanel">
+<div class="section">Case timeline — single source of truth (both matters)</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+    <div id="tlFilter" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div class="seg" id="segView" style="max-width:200px"><button type="button" data-v="list" class="on">List</button><button type="button" data-v="table">Table</button></div>
+  </div>
+  <div id="timeline"></div>
+  <div style="border:1px dashed var(--line2);border-radius:var(--r);padding:14px 16px;margin-top:16px">
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink2);margin-bottom:10px">+ Add an event</div>
+    <div style="display:grid;grid-template-columns:140px 1fr 150px 160px auto;gap:10px;align-items:end">
+      <div class="ctl"><label for="addDate">Date</label><input type="date" id="addDate"></div>
+      <div class="ctl"><label for="addTitle">Event</label><input type="text" id="addTitle" placeholder="what happened"></div>
+      <div class="ctl"><label for="addCat">Category</label><select id="addCat"><option value="emp">Employment</option><option value="med">Medical</option><option value="com">Comcare</option><option value="leg">Legal</option><option value="lv">Leave/Pay</option><option value="dl">Deadline</option><option value="priv">Privacy/FW</option></select></div>
+      <div class="ctl"><label for="addSrc">Source</label><input type="text" id="addSrc" placeholder="email / letter / note"></div>
+      <button type="button" id="addBtn" style="padding:9px 16px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:13px;cursor:pointer">Add</button>
+    </div>
+    <div id="addMsg" style="font-size:11.5px;color:var(--ink3);margin-top:7px"></div>
+  </div>
+  <div class="note">Compiled from the case Drive folders (S&amp;G letters, Short Brief, reconsideration pack, MPC pack) and Gmail. Source conflicts flagged (unfit 12 Jan vs leave 19 Feb; claim 26 vs 27 Feb). <b>This is the only place events live</b> — every tab reads from here. Added events and all inputs are saved in your browser and persist when you reopen.</div>
+</div>
+</section>
+
+<section class="tab-panel" id="tab-actions" role="tabpanel">
+<div class="section">Legal actions — multi-front tracker</div>
+<div class="card" style="margin-bottom:16px">
+  <div class="alert" style="background:rgba(154,107,0,.12);border:1px solid rgba(154,107,0,.32);color:var(--ink);margin-top:0;margin-bottom:14px"><b style="color:var(--warn)">Decision aid, not legal advice.</b> Four possible fronts arising from the same conduct by Austrade. Facts, assumptions, risks and the next action are separated in each card. Confirm everything with your lawyer before lodging anything.</div>
+  <div class="kpis">
+    <div class="kpi neg"><div class="l">Nearest hard deadline</div><div class="v" style="font-size:18px">22 Jun 2026</div><div class="s">Comcare reconsideration</div></div>
+    <div class="kpi a"><div class="l">Fair Work window</div><div class="v" style="font-size:18px">No 21-day trap</div><div class="s">non-dismissal · s372 · ~6 yr</div></div>
+    <div class="kpi pp"><div class="l">OAIC window</div><div class="v" style="font-size:18px">~12 months</div><div class="s">act within 12 mo of conduct</div></div>
+    <div class="kpi warn"><div class="l">Live fronts</div><div class="v" style="font-size:18px">1 live · 3 optional</div><div class="s">Comcare live; rest to decide</div></div>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--pos)"></i>Fact / verified</span>
+    <span><i style="background:var(--warn)"></i>Assumption — confirm</span>
+    <span><i style="background:var(--neg)"></i>Risk</span>
+    <span><i style="background:var(--a)"></i>Next action</span>
+  </div>
 </div>
 
-<!-- WORKING NOTES + DATA -->
-<div class="section">Working notes &amp; data</div>
+<div class="section">Limitation &amp; deadline register — the clocks</div>
+<div class="card" style="margin-bottom:16px">
+  <div class="mtx-wrap">
+  <table class="mtx">
+    <thead><tr><th style="width:24%">Action / right</th><th style="width:20%">Limitation period</th><th style="width:23%">Key date (as at 14 Jun 2026)</th><th style="width:33%">Basis &amp; note</th></tr></thead>
+    <tbody>
+      <tr class="key">
+        <td class="it">Comcare reconsideration request</td>
+        <td>30 days from determination (extension granted)</td>
+        <td><b style="color:var(--neg)">Due 22 Jun 2026 · 8 days</b></td>
+        <td>SRC Act s62. Original 6 Jun; Comcare extended to 22 Jun. Miss it → 7 May decline stands.</td>
+      </tr>
+      <tr class="key">
+        <td class="it">ART review application</td>
+        <td>60 days from receiving reviewable decision</td>
+        <td>Clock starts when reconsideration outcome received (not yet issued)</td>
+        <td>SRC Act s64. ART replaced the AAT 14 Oct 2024. Extension can be sought. S&amp;G act at this stage.</td>
+      </tr>
+      <tr>
+        <td class="it">Fair Work — general protections (non-dismissal)</td>
+        <td>~6 years (no 21-day trap)</td>
+        <td>Open — well within time</td>
+        <td>FW Act: 21-day limit is dismissal-only (s366). Non-dismissal → FWC s372; civil-remedy limit ~6 yr (s544).</td>
+      </tr>
+      <tr>
+        <td class="it">OAIC privacy complaint</td>
+        <td>~12 months per incident (discretion)</td>
+        <td>Rolling — act within ~12 mo of each act</td>
+        <td>Privacy Act s41. Agency first, then OAIC. Earliest incidents age out first.</td>
+      </tr>
+      <tr>
+        <td class="it">Common-law damages (negligence)</td>
+        <td>Likely barred / election required</td>
+        <td>Confirm before relying</td>
+        <td>SRC Act s44–45 generally bars common-law for Cwlth-covered injury (limited election, non-economic loss). Don't assume a 3-yr personal-injury clock applies.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note"><b>Nearest hard clock:</b> Comcare reconsideration <b>22 Jun 2026</b> (8 days). The ART 60-day clock only starts once the reconsideration decision is received — so lodging the reconsideration in time also protects the ART pathway. <b>Confirm every limitation period with S&amp;G</b> before relying: ART transitional rules (post-14 Oct 2024 AAT→ART merger) and any SRC Act election should be verified. Sources: Comcare scheme guidance, SRC Act ss 62 &amp; 64; ART workers-compensation review.</div>
+</div>
+
+<div class="act f1">
+  <div class="hd"><h4>1 · Austrade — OAIC privacy complaint</h4><span class="forum">Forum: agency first → OAIC</span></div>
+  <dl>
+    <dt>Basis</dt><dd>Interference with privacy under the Privacy Act 1988 — an APP breach by Austrade in how it collected, used, disclosed or secured your personal (and sensitive medical) information through the posting cessation, Comcare and leave processes.</dd>
+    <dt>Why strong</dt><dd class="fact">Austrade is a <b>Commonwealth agency</b>, so the private-sector <b>employee-records exemption (s7B(3)) does not apply</b> — agencies must comply with the APPs for employee information. Health/medical data is <b>sensitive information</b> with higher protection.</dd>
+    <dt>Confirm</dt><dd class="assume">The specific incident(s): what information, disclosed to whom, when, and the harm. Needs dates + documents to anchor each alleged breach.</dd>
+    <dt>Limitation</dt><dd class="risk">No fixed bar, but OAIC may decline a complaint about conduct more than <b>12 months</b> old (s41 discretion). Act within ~12 months of each incident.</dd>
+    <dt>Cost</dt><dd>Free to lodge. Remedies: apology, correction, policy change, and compensation for loss/distress.</dd>
+    <dt>Next action</dt><dd class="next">List each privacy incident with date + evidence, then complain to Austrade's privacy officer first; if no adequate response in 30 days, lodge with OAIC.</dd>
+  </dl>
+</div>
+
+<div class="act f2">
+  <div class="hd"><h4>2 · Payslip — Privacy Act breach</h4><span class="forum">Forum: agency first → OAIC</span></div>
+  <dl>
+    <dt>Basis</dt><dd>Specific privacy breach in the handling of your payslip / pay information (e.g. wrong recipient, unauthorised access, or incorrect/over-collected data).</dd>
+    <dt>Why strong</dt><dd class="fact">Same point as Front 1: because Austrade is an <b>agency</b>, payslips as employee records are <b>not</b> shielded by the s7B(3) exemption — the APPs apply to how Austrade handles them.</dd>
+    <dt>Confirm</dt><dd class="assume">Exactly what went wrong with the payslip, the date, who received/accessed it, and whether it was a one-off or systemic.</dd>
+    <dt>Limitation</dt><dd class="risk">Same ~12-month OAIC timeliness discretion. Preserve the payslip and any covering email/metadata now.</dd>
+    <dt>Relationship</dt><dd>Likely best run <b>together with Front 1</b> as one OAIC complaint with multiple incidents, not two separate filings.</dd>
+    <dt>Next action</dt><dd class="next">Pin down the payslip incident facts; fold into the single OAIC complaint unless it is clearly distinct.</dd>
+  </dl>
+</div>
+
+<div class="act f3">
+  <div class="hd"><h4>3 · Fair Work — general protections / adverse action</h4><span class="forum">Forum: FWC s372 → Federal Court / FCFCOA</span></div>
+  <dl>
+    <dt>Basis</dt><dd>Adverse action taken because you exercised a <b>workplace right</b> — e.g. raising concerns about the manager's conduct, taking certified leave, and lodging the Comcare claim (FW Act ss 340–341). Candidate adverse actions: ceasing the posting early, pressing relocation during certified incapacity, the call during leave that triggered a panic attack.</dd>
+    <dt>Time limit</dt><dd class="fact">You were <b>not dismissed</b>, so the <b>21-day limit does not apply</b> (that is dismissal-only, s366). Non-dismissal general protections: apply to the FWC under <b>s372</b> while employed; civil remedy carries a <b>~6-year</b> limitation, then Federal Court or FCFCOA if unresolved.</dd>
+    <dt>Why strong</dt><dd class="fact">Reverse onus: once you show adverse action + a workplace right, <b>Austrade must prove</b> the action was not for the prohibited reason.</dd>
+    <dt>Risk</dt><dd class="risk">Must evidence the causal link (right → action). <b>Narrative-consistency risk</b> with Comcare/MPC: arguments here must not hand Austrade the "reasonable administrative action" point. Sooner is better for evidence and an ongoing relationship.</dd>
+    <dt>Next action</dt><dd class="next">Map each adverse act to a workplace right and date; decide s372 conciliation (FWC) vs court, and align wording with the MPC and Comcare cases.</dd>
+  </dl>
+</div>
+
+<div class="act f4">
+  <div class="hd"><h4>4 · Comcare claim (live)</h4><span class="forum">Forum: reconsideration → ART</span></div>
+  <dl>
+    <dt>Status</dt><dd class="fact"><b>Denied 7 May 2026</b> on the s5A "reasonable administrative action" exclusion. Reconsideration deadline <b>extended to 22 Jun 2026</b>. <b>Slater &amp; Gordon engaged</b> on the matter (9 Jun); Wearing Blairs declined.</dd>
+    <dt>Basis</dt><dd>SRC Act 1988 liability for the psychological injury; the fight is whether the injury flowed from the <b>manner</b> of the action rather than reasonable administrative action.</dd>
+    <dt>Cross-link</dt><dd>Economics, fees and the representation status are on the <b>Comcare claim</b> tab. A win on Front 3 (adverse action) or the MPC weakens the s5A shield here.</dd>
+    <dt>Risk</dt><dd class="risk">Hard deadline. If the reconsideration is not lodged by 22 Jun, the live claim stalls.</dd>
+    <dt>Next action</dt><dd class="next">Confirm Comcare accepted the extension in writing; confirm with S&amp;G who lodges the reconsideration by 22 Jun; S&amp;G act through to ART.</dd>
+  </dl>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <div style="font-size:13.5px;line-height:1.7;color:var(--ink2)">
+    <b style="color:var(--ink)">How the fronts interact (read before opening any):</b> the four matters share one set of facts, so they reinforce — or undercut — each other.<br><br>
+    A finding that the early cessation was <b>disproportionate</b> (MPC) or <b>adverse action for a workplace right</b> (Fair Work) directly weakens Austrade's <b>"reasonable administrative action"</b> defence in Comcare — the single pivot across every front. The privacy complaints (Fronts 1–2) run on a separate track and carry little narrative risk, but the same incidents should be described <b>consistently</b> everywhere. <b>Sequence and wording should be set with your lawyer</b> so a concession in one forum is not weaponised in another.
+  </div>
+  <div class="note"><b>Verified facts in this tab:</b> Fair Work non-dismissal time limits (no 21-day trap; s372; ~6-yr civil-remedy limitation; Federal Court / FCFCOA); the Privacy Act employee-records exemption applies to <b>private-sector organisations only</b>, so it does not shield Austrade as a Commonwealth <b>agency</b>; OAIC complaints are free, go to the agency first, and may be declined if conduct is &gt;12 months old. Confirm application to your specific facts with a privacy/employment lawyer.</div>
+</div>
+</section>
+
+<div class="section">Working notes &amp; data (shared across tabs)</div>
 <div class="card">
   <textarea id="notes" placeholder="Running notes — strategy, questions for the lawyer, things to confirm with Pay/CPSU… (saved automatically in your browser)" style="width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--line2);border-radius:var(--r);background:var(--surface);color:var(--ink);font:14px/1.6 inherit;resize:vertical"></textarea>
   <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -264,7 +694,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
   </div>
 </div>
 
-<div class="foot">Sources: Austrade pay advices 18 Dec 2025–4 Jun 2026 · SRC Act 1988 ss 8,19,20 · LSL (Cth Employees) Act 1976 · S&amp;G Conditional Costs Agreement (signed 3 Jun 2026) · Wearing Blairs retainer terms (4 Jun 2026) · MPC review ROA-26-0097 · indicative only — confirm deemed injury date, super offset, tax, and leave re-credit.</div>
+<div class="foot">Sources: MPC secondary-review pack (6 Mar + 27 Apr 2026 statements; Austrade 3 Dec inquiry, 23 Dec cessation, 15 Jan review; CEI 5; witness statements) · Austrade pay advices 18 Dec 2025–4 Jun 2026 · SRC Act 1988 ss 5A,8,19,20 · Privacy Act 1988 ss 6,7B,41 (APPs) · Fair Work Act 2009 ss 340,341,366,372 · LSL (Cth Employees) Act 1976 · S&amp;G Conditional Costs Agreement (executed 9 Jun 2026) · WB retainer terms (4 Jun 2026, declined) · MPC review ROA-26-0097 · indicative only — confirm all characterisations and limitation periods with your lawyer.</div>
 </div>
 
 <script>
@@ -276,12 +706,11 @@ const el=id=>document.getElementById(id);
 const NWE={A:2612.15,B:5251.52};
 const SA_HOL=["2026-06-08","2026-10-05","2026-12-25","2026-12-28","2027-01-01","2026-01-26","2027-01-26","2026-03-09","2027-03-08","2026-04-03","2027-04-02"];
 const isHol=d=>SA_HOL.includes(d.toISOString().slice(0,10));
-const CD=["2026-12-29","2026-12-30","2026-12-31","2027-12-29","2027-12-30","2027-12-31"]; // Dec close-down (cl35) — paid, no deduction
+const CD=["2026-12-29","2026-12-30","2026-12-31","2027-12-29","2027-12-30","2027-12-31"];
 const isCD=d=>CD.includes(d.toISOString().slice(0,10));
-const ACC=20/260; // per working day: 20 d/yr each for annual & personal
-let half=1, adj=0.75, accr=1;
+const ACC=20/260;
+let half=1, adj=0.75, accr=1, activeTab='mpc';
 
-// ---- SECTION 1: leave runway ----
 function leave(){
   const start=new Date(el('lvStart').value);
   let pers=+el('lvPers').value||0, lsl=+el('lvLsl').value||0, ann=+el('lvAnn').value||0;
@@ -292,9 +721,9 @@ function leave(){
   let endP=null,endL=null,endA=null;
   while((p>0||l>0||a>0)&&guard<2000){
     guard++; const dow=d.getDay();
-    if(dow!==0&&dow!==6&&!isHol(d)){ // paid working day
-      if(accr){p+=ACC;a+=ACC;accrued+=2*ACC;} // annual + personal accrue while on paid leave
-      if(isCD(d)){ /* Dec close-down: paid, no leave deducted */ }
+    if(dow!==0&&dow!==6&&!isHol(d)){
+      if(accr){p+=ACC;a+=ACC;accrued+=2*ACC;}
+      if(isCD(d)){}
       else if(p>0){p-=1;if(p<=0&&!endP)endP=new Date(d);}
       else if(d>=lslVest&&l>0){l-=1/half;if(l<=0&&!endL)endL=new Date(d);}
       else if(a>0){a-=1;if(a<=0&&!endA)endA=new Date(d);}
@@ -302,13 +731,12 @@ function leave(){
     days++; d.setDate(d.getDate()+1);
   }
   el('lvTot').textContent=tot.toFixed(1)+(accr?` +${accrued.toFixed(0)}`:"")+" d";
-  const cliff=new Date(d); // first LWOP day ≈ d
+  const cliff=new Date(d);
   const wkRun=Math.round(days/7);
   el('lvCliff').textContent=fmt(new Date(cliff.getTime()-864e5));
   el('lvCliffSub').textContent="last paid day";
   el('lvWeeks').textContent=wkRun+" wks";
   el('lvLwop').textContent=fmt(cliff);
-  // bars (share of total)
   const buckets=[["Personal",pers,'p',endP],["Long service"+(half==2?" (½ pay)":""),lsl*(half==2?2:1)/1,'l',endL],["Annual",ann,'an',endA]];
   const maxd=Math.max(pers,lsl*(half),ann,1);
   el('lvBars').innerHTML=buckets.map(b=>{
@@ -318,13 +746,11 @@ function leave(){
   }).join('');
 }
 
-// ---- SECTION 2: NWE ----
 function nwe(){
   const start=new Date('2026-02-19');
   const accept=new Date(el('accept').value), postEnd=new Date(el('postEnd').value);
   const yrs=+el('awayYrs').value||2;
   const N=Math.round(yrs*52);
-  const wB=(date,i)=> ( (i<= Math.round((postEnd-start)/(7*864e5)))?NWE.B:NWE.A );
   const cutoff=Math.round((postEnd-start)/(7*864e5));
   const acceptWk=Math.round((accept-start)/(7*864e5));
   let totA=0,totB=0,backB=0;
@@ -333,7 +759,6 @@ function nwe(){
   el('nA').textContent=fK(totA); el('nB').textContent=fK(totB);
   el('nPrize').textContent=fK(totB-totA);
   el('nBack').textContent=fK(backB); el('nBackSub').textContent=`to ${fmt(accept)} · re-credit + LWOP cash`;
-  // phase table
   const segs=[["P1 · first 45 wks",1,Math.min(45,N),1,true],["P2 · post-45, in-posting",46,Math.min(cutoff,N),adj,true],["P3 · post-posting",cutoff+1,N,adj,false]];
   const tb=el('nweTbl').querySelector('tbody');tb.innerHTML="";let TA=0,TB=0;
   segs.forEach(s=>{if(s[2]<s[1])return;const w=s[2]-s[1]+1;const aw=NWE.A*s[3],bw=(s[4]?NWE.B:NWE.A)*s[3];const at=aw*w,bt=bw*w;TA+=at;TB+=bt;
@@ -343,7 +768,6 @@ function nwe(){
   return {totA,totB};
 }
 
-// ---- SECTION 3: cost vs return ----
 const STAGES={
   1:{name:"Stage 1",sub:"before ART application",fixed:11400,total:[12000,17000],pay:[12000,17000]},
   2:{name:"Stage 2",sub:"after lodging, before conciliation",fixed:22800,total:[23000,30000],pay:[12000,15000]},
@@ -368,34 +792,46 @@ function cost(totA,totB){
   el('cBars').innerHTML=bars.map(b=>`<div class="barrow"><span class="nm">${b[0]}</span><div class="bar"><div class="fill ${b[2]==='a'?'p':b[2]==='b'?'an':b[2]==='l'?'l':'p'}" style="width:${Math.max(2,Math.min(100,b[1]/max*100))}%;background:${b[2]==='a'?'var(--a)':b[2]==='b'?'var(--b)':b[2]==='an'?'var(--neg)':'var(--pos)'}"></div></div><span class="dt">${f0(b[1])}</span></div>`).join('');
 }
 
-// ---- SECTION 0: timeline ----
-const CATS={emp:["Employment","var(--a)"],med:["Medical","var(--pos)"],com:["Comcare","var(--b)"],leg:["Legal","var(--purple)"],lv:["Leave/Pay","var(--warn)"],dl:["Deadline","var(--neg)"]};
+const CATS={emp:["Employment","var(--a)"],med:["Medical","var(--pos)"],com:["Comcare","var(--b)"],leg:["Legal","var(--purple)"],lv:["Leave/Pay","var(--warn)"],dl:["Deadline","var(--neg)"],priv:["Privacy/FW","var(--purple)"]};
 const EVENTS=[
 ["2016-08-15","emp","Commenced employment with Austrade","S&G letter"],
 ["2024-07-01","emp","Began 3-yr Vietnam posting (Trade Commissioner, HCMC) — due to end 1 Jul 2027","S&G"],
+["2024-05-20","med","Pre-posting occ-health medical (Dr Muffett, Sonic HealthPlus) — clean baseline: no meds/history/allergies","Annexure A"],
+["2024-08-15","med","Emergency surgery in Thailand; ~15-day recovery recommended","MPC Statement"],
+["2024-08-20","emp","Directed back to duties during recovery (post coverage) — incl. InnoEx 22 Aug","MPC Statement"],
+["2024-11-01","emp","Concerns re manager (Ball) conduct raised to HR with colleague C. Morley","MPC Statement"],
 ["2024-12-01","emp","Began raising concerns about manager's conduct","Short Brief"],
-["2025-12-03","com","Preliminary inquiry notice (8 concerns); symptoms first noticed","Short Brief"],
-["2025-12-23","emp","CPO decision to cease the posting early (s25)","Short Brief"],
+["2025-05-10","emp","Reunion-travel TRF changed Adelaide→Italy, resubmitted via workflow (Item 2)","MPC pack"],
+["2025-07-23","emp","Bangkok Third-Party Note matter circulating within management (Item 1)","Att. S email"],
+["2025-12-03","com","Notice of preliminary inquiry — 8 concerns (CPO Wyers)","Att. K"],
+["2025-12-23","emp","s25 decision: cease posting early, redeploy Adelaide; 'unreasonable risk'","Att. L"],
 ["2025-12-30","med","First medical treatment (HCMC); psychiatrist referral","Short Brief"],
-["2026-01-12","med","Certified unfit for work (severe stress / adjustment disorder)","Short Brief"],
-["2026-01-15","emp","Notified posting ceased, return to Adelaide; s25 upheld on primary review","Short Brief"],
+["2026-01-12","med","Certified unfit for work (severe stress / adjustment disorder, F43)","Short Brief"],
+["2026-01-15","emp","Primary review UPHELD by COO Woodburn ('consistent with Ben')","Att. M"],
 ["2026-01-27","emp","Relocation pressed during certified incapacity ('no negotiation')","Recon pack"],
+["2026-01-29","emp","Uplift on same-day notice; coincided with psychiatrist appt","MPC Statement"],
 ["2026-02-03","emp","Returned to Adelaide; posting completed; pay reverts onshore","Payslips"],
 ["2026-02-19","lv","Sick/personal leave begins (onshore, full pay)","Payslips"],
+["2026-02-24","med","End-of-posting occ-health medical (Dr Muffett, Sonic HealthPlus) — depression+anxiety, not fit to work","Annexure B"],
 ["2026-02-26","com","Comcare claim lodged — major depressive disorder + anxiety","S&G (27 Feb per Brief)"],
-["2026-03-06","com","MPC secondary review filed","Short Brief"],
-["2026-04-13","med","Comcare medical report / referral letter issued","Gmail"],
-["2026-04-16","com","Correction request re Comcare medical report","Gmail"],
-["2026-04-27","com","MPC supplementary response filed","Short Brief"],
+["2026-03-06","leg","MPC secondary review filed (Statement of Action)","MPC pack"],
+["2026-04-09","com","Austrade employer response + redacted documents list served","MPC pack"],
+["2026-03-27","com","Austrade s71 statement of facts served on Comcare","Comcare det."],
+["2026-04-23","med","Dr Gutkin employer IME — confirms MDD + functional incapacity","Comcare pack"],
+["2026-04-15","leg","MPC delegate confirms key factors = Items 1,2,4,5,7","Delegate email"],
+["2026-04-27","leg","MPC supplementary statement filed","MPC pack"],
 ["2026-05-07","com","Comcare DENIED liability — 'reasonable administrative action' (s5A)","Determination"],
 ["2026-05-11","leg","Short brief prepared; legal enquiries begin","Drive"],
 ["2026-05-19","leg","Lawyer consults (Cameron Hall, KH, Lander & Co)","Gmail"],
 ["2026-05-21","dl","Comcare confirms reconsideration deadline = 6 Jun 2026","Gmail"],
-["2026-05-27","med","Austrade call during certified leave → panic attack; new cert ('another month') sent","Gmail"],
+["2026-05-27","med","Austrade call during certified leave → panic attack; new cert sent","Gmail"],
 ["2026-05-28","leg","Incident notified to CPSU (Daisy) + GP (Dr Rajat)","Gmail"],
+["2026-06-03","emp","Austrade welfare 'check-in' contact during leave (after 27 May incident)","Gmail"],
 ["2026-05-29","leg","Slater & Gordon teleconference — 'reasonable prospects' at ART","S&G"],
-["2026-06-03","leg","S&G CPSU costs agreement signed; medical cert sent to Pay team","DocuSign/Gmail"],
-["2026-06-04","leg","Wearing Blairs retainer terms sent — offers to draft + file reconsideration now","Gmail"],
+["2026-06-03","leg","S&G CPSU costs agreement sent for signing; medical cert sent to Pay team","DocuSign/Gmail"],
+["2026-06-04","leg","Wearing Blairs retainer terms sent — offered to draft + file reconsideration","Gmail"],
+["2026-06-09","leg","S&G costs agreement executed (DocuSign) — S&G engaged for Comcare; Wearing Blairs retainer not taken up","DocuSign/Gmail"],
+["2026-06-12","leg","Informed MPC (Brandon) that S&G now represent the Comcare matter","Gmail"],
 ["2026-06-06","dl","Original reconsideration deadline","Comcare"],
 ["2026-06-22","dl","Comcare reconsideration deadline extended to 22 June 2026","Gmail"],
 ["2026-06-30","dl","MPC review target completion","MPC"],
@@ -404,8 +840,8 @@ const EVENTS=[
 ["2027-07-01","dl","Posting term would have ended (allowance cap)","Contract"]
 ];
 let tlFilter=new Set(Object.keys(CATS));
-const TODAY=new Date('2026-06-05');
-let userEvents=[]; // [date,cat,title,src]
+const TODAY=new Date('2026-06-14');
+let userEvents=[];
 let tlView='list';
 function renderTL(){
   const fp=el('tlFilter');
@@ -447,7 +883,7 @@ const INP=["lvStart","lvPers","lvLsl","lvLslDate","lvAnn","accept","postEnd","aw
 const LSKEY="jonCaseDash_v1";
 function saveState(){try{localStorage.setItem(LSKEY,JSON.stringify({
   inp:Object.fromEntries(INP.map(id=>[id,el(id).value])),
-  half,adj,accr,userEvents,notes:el('notes').value,filter:[...tlFilter],view:tlView
+  half,adj,accr,userEvents,notes:el('notes').value,filter:[...tlFilter],view:tlView,tab:activeTab
 }));}catch(e){}}
 function setSeg(segId,val,setter){const seg=el(segId);[...seg.children].forEach(b=>{const on=b.dataset.v==String(val);b.classList.toggle('on',on);if(on)setter(+val);});}
 function loadState(){try{const s=JSON.parse(localStorage.getItem(LSKEY));if(!s)return;
@@ -459,6 +895,7 @@ function loadState(){try{const s=JSON.parse(localStorage.getItem(LSKEY));if(!s)r
   if(s.notes!=null)el('notes').value=s.notes;
   if(Array.isArray(s.filter))tlFilter=new Set(s.filter);
   if(s.view){tlView=s.view;[...el('segView').children].forEach(b=>b.classList.toggle('on',b.dataset.v===s.view));}
+  if(s.tab)activeTab=s.tab;
 }catch(e){}}
 function daysTo(iso){return Math.round((new Date(iso)-TODAY)/864e5);}
 function mpc(){
@@ -467,10 +904,16 @@ function mpc(){
   el('mDeadlineSub').textContent=dc>0?`${dc} days left — lodge now`:(dc===0?'TODAY':`${-dc} days overdue`);
   el('mDueSub').textContent=dm>0?`${dm} days away`:'passed';
 }
+function setTab(t){
+  activeTab=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('on',p.id==='tab-'+t));
+  saveState();
+}
 function exportData(){const s=localStorage.getItem(LSKEY)||JSON.stringify({userEvents,notes:el('notes').value});
   const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(s);
   a.download='comcare-mpc-dashboard-'+new Date().toISOString().slice(0,10)+'.json';a.click();}
-function importData(file){const r=new FileReader();r.onload=()=>{try{localStorage.setItem(LSKEY,r.result);loadState();buildAll();}catch(e){alert('Invalid file');}};r.readAsText(file);}
+function importData(file){const r=new FileReader();r.onload=()=>{try{localStorage.setItem(LSKEY,r.result);loadState();buildAll();setTab(activeTab);}catch(e){alert('Invalid file');}};r.readAsText(file);}
 function buildAll(){renderTL();mpc();leave();const t=nwe();cost(t.totA,t.totB);saveState();}
 el('segHalf').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;half=+b.dataset.v;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));buildAll();});
 el('segAccr').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;accr=+b.dataset.v;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));buildAll();});
@@ -482,8 +925,10 @@ el('notes').addEventListener('input',()=>{clearTimeout(window._nt);window._nt=se
 el('expBtn').addEventListener('click',exportData);
 el('impFile').addEventListener('change',e=>{if(e.target.files[0])importData(e.target.files[0]);});
 el('clrBtn').addEventListener('click',()=>{if(confirm('Reset all inputs, added events and notes to defaults?')){localStorage.removeItem(LSKEY);location.reload();}});
+document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(b)setTab(b.dataset.t);});
 loadState();
 buildAll();
+setTab(activeTab);
 </script>
 </body>
 </html>
