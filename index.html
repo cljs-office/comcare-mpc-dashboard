@@ -2,7 +2,17 @@
 {
   "name": "Comcare Mpc Dashboard",
   "schemaVersion": 1,
-  "description": "Comcare MPC Dashboard (Jonathan Saw): case timeline (add/remove events), MPC review status, leave runway to LWOP (accruals + SA public holidays + Dec close-down), NWE with vs without posting allowance if Comcare accepts liability, and net return after verified Slater & Gordon fixed fees. Inputs, added events and notes persist in the browser; export/import JSON to back up."
+  "description": "Comcare MPC Dashboard (Jonathan Saw), current to 2 Jul 2026: Comcare Reviewable Decision due ~17 Jul; Austrade s46 CONFIRMED 23 Jun (ADJR JR window ~21 Jul); RTW reply done 23 Jun (correspondence redirected to Candice). NEW TPD/Super tab: UniSuper IP declined (no valid cover Jan 2026), TPD claim open — $798k cover + $23k balance ≈ $821k, insurer MetLife; S&G Superannuation enquiry E-252902 written to UniSuper 2 Jul (reply ~4 wks). Tabs: MPC review, Comcare claim economics, TPD/Super, shared timeline, legal-actions tracker. Inputs/notes persist in browser.",
+  "mcpTools": [
+    "mcp__d6229a8c-f1cf-4029-9c41-dda73c0f73ca__search_threads",
+    "mcp__d6229a8c-f1cf-4029-9c41-dda73c0f73ca__get_thread",
+    "mcp__18cebeeb-136d-4bea-bd53-516d93816945__search_files"
+  ],
+  "mcpServerNames": [
+    "Gmail",
+    "Gmail",
+    "Google Drive"
+  ]
 }
 </script>
 <html lang="en">
@@ -26,7 +36,7 @@
   --shadow2:0 2px 6px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.34);}}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.62;font-size:15.5px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-wrap:break-word;word-break:break-word}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.62;font-size:15.5px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:22px 20px 56px}
 :focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:5px}
 .head{background:linear-gradient(135deg,var(--navy),#1c2d52);color:#fff;border-radius:var(--rlg);padding:24px 28px;margin-bottom:14px;box-shadow:var(--shadow2)}
@@ -147,32 +157,28 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
   .section{margin:20px 2px 10px;font-size:12px}
   .cmp dl{grid-template-columns:1fr;gap:3px 0}.cmp dt{margin-top:8px}
   #nweTbl,#costTbl{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
-  .addgrid{grid-template-columns:1fr 1fr!important}
-  .addgrid .ctl:nth-child(2){grid-column:1/-1}
-  .addgrid #addBtn{grid-column:1/-1;width:100%}
-  .tlhead{flex-direction:column;align-items:stretch}
-  .tlhead #segView{max-width:none!important}
-  .ctl input,.ctl select,.seg button,.tlp,.tab,#addBtn,#expBtn,#impFile+label,#clrBtn{min-height:44px}
+  .ctl input,.ctl select,.seg button,.tlp,.tab{min-height:42px}
   textarea#notes{min-height:140px}
 }
-@media(max-width:380px){.controls{grid-template-columns:1fr}.barrow .dt{text-align:left}.addgrid{grid-template-columns:1fr!important}.addgrid .ctl:nth-child(2){grid-column:auto}}
+@media(max-width:380px){.controls{grid-template-columns:1fr}.barrow .dt{text-align:left}}
 @media print{.tabs,.seg,#tlFilter,#addBtn,#expBtn,#clrBtn,#impFile{display:none!important}.tab-panel{display:block!important;break-inside:avoid}.card,.act,.kpi,.mtx tr{break-inside:avoid}.section{break-after:avoid}body{font-size:11pt;background:#fff}.head{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
 <body>
-<h2 class="sr-only">Tabbed dashboard: MPC review status and full s25 allegations-vs-defence narrative; Comcare claim economics; a shared case timeline; and a multi-front legal-actions tracker.</h2>
+<h2 class="sr-only">Tabbed dashboard: MPC review status and full s25 allegations-vs-defence narrative; Comcare claim economics; TPD superannuation insurance claim; a shared case timeline; and a multi-front legal-actions tracker.</h2>
 <div class="wrap">
 
 <header class="head">
-  <div class="eyebrow">Comcare claim 1390598/1 · MPC review ROA-26-0097 · J. Saw · EL104 · as at 14 Jun 2026</div>
+  <div class="eyebrow">Comcare claim 1390598/1 · MPC review ROA-26-0097 · UniSuper 13822331 · J. Saw · EL104 · as at 2 Jul 2026</div>
   <h1>Comcare · MPC · Legal Dashboard</h1>
-  <div class="sub">Two linked matters and the wider legal options. Use the tabs: <b>MPC review</b> · <b>Comcare claim</b> economics · a shared <b>Timeline</b> (one source of truth) · and a <b>Legal actions</b> tracker for the fronts you may open against Austrade.</div>
-  <div class="alert"><b>Key caution:</b> while the Comcare claim is rejected you live on your own leave. If accepted later, the pre-acceptance "back-payment" is largely realised as <b>leave re-credit, not new cash</b> — so weigh legal fees against actual cash benefit. Indicative only; not financial or legal advice.</div>
+  <div class="sub">Linked matters and the wider legal options. Use the tabs: <b>MPC review</b> · <b>Comcare claim</b> economics · <b>TPD / Super</b> insurance claim · a shared <b>Timeline</b> (one source of truth) · and a <b>Legal actions</b> tracker for the fronts you may open against Austrade.</div>
+  <div class="alert"><b>Status 2 Jul 2026:</b> Comcare <b>Reviewable Decision due ~17 Jul</b> (reconsideration lodged 17 Jun, RFR 40803632.1). Austrade <b>s46 CONFIRMED 23 Jun</b> — the ADJR ~28-day <b>judicial-review window closes ~21 Jul</b>; decide with S&amp;G now (CPSU referral in train, 26 Jun). RTW / GP-capacity reply <b>DONE 23 Jun</b> — med cert sent, all Austrade correspondence redirected to Candice. <b>NEW — TPD/Super track live:</b> UniSuper <b>declined Income Protection</b> (no valid IP cover at Jan 2026, the last-worked date) but the <b>TPD claim is open</b> — cover <b>$798,000</b> + account balance ≈ <b>$821,150</b> total; insurer <b>MetLife</b>; S&amp;G Superannuation team (enquiry <b>E-252902</b>) wrote to UniSuper 2 Jul, fund reply ~4 wks. See the <b>TPD / Super</b> tab.<br><br><b>Key caution:</b> while the Comcare claim is rejected you live on your own leave. If accepted later, the pre-acceptance "back-payment" is largely realised as <b>leave re-credit, not new cash</b> — so weigh legal fees against actual cash benefit. Indicative only; not financial or legal advice.</div>
 </header>
 
 <nav class="tabs" role="tablist" aria-label="Dashboard sections">
   <button type="button" class="tab on" role="tab" data-t="mpc"><span class="tdot" style="background:var(--purple)"></span>MPC review</button>
   <button type="button" class="tab" role="tab" data-t="comcare"><span class="tdot" style="background:var(--b)"></span>Comcare claim</button>
+  <button type="button" class="tab" role="tab" data-t="tpd"><span class="tdot" style="background:var(--pos)"></span>TPD / Super</button>
   <button type="button" class="tab" role="tab" data-t="timeline"><span class="tdot" style="background:var(--a)"></span>Timeline</button>
   <button type="button" class="tab" role="tab" data-t="actions"><span class="tdot" style="background:var(--neg)"></span>Legal actions<span class="tcount">4</span></button>
 </nav>
@@ -182,12 +188,14 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
 <div class="card">
   <div class="kpis" style="margin-bottom:14px">
     <div class="kpi com" style="border-left-color:var(--b)"><div class="l">Comcare reconsideration</div><div class="v" id="mDeadline" style="font-size:18px"></div><div class="s" id="mDeadlineSub"></div></div>
-    <div class="kpi pp"><div class="l">MPC target completion</div><div class="v" style="font-size:18px">30 Jun 2026</div><div class="s">internal aim</div></div>
-    <div class="kpi pp"><div class="l">MPC formal due date</div><div class="v" id="mDue" style="font-size:18px">22 Jul 2026</div><div class="s" id="mDueSub"></div></div>
-    <div class="kpi a"><div class="l">MPC stage</div><div class="v" style="font-size:18px">Under review</div><div class="s">secondary review; supp. filed 27 Apr</div></div>
+    <div class="kpi neg"><div class="l">MPC secondary review report</div><div class="v" style="font-size:18px">Issued 18 Jun 2026</div><div class="s">ADVERSE — narrow / one-sided</div></div>
+    <div class="kpi neg"><div class="l">Austrade s46 decision</div><div class="v" id="mDue" style="font-size:18px">CONFIRMED · 23 Jun 2026</div><div class="s" id="mDueSub">accepted MPC rec — s25 cessation upheld</div></div>
+    <div class="kpi a"><div class="l">MPC stage</div><div class="v" style="font-size:18px">Process closed</div><div class="s">s46 confirmed; judicial review under review w/ S&amp;G</div></div>
   </div>
   <div style="font-size:13.5px;line-height:1.7;color:var(--ink2)">
-    <b style="color:var(--ink)">What the MPC is reviewing:</b> Austrade's <b>s25 decision (23 Dec 2025)</b>, by Chief People Officer Ben Wyers, to cease the Ho Chi Minh City posting early and redeploy Jon to Adelaide — on the basis that a <b>"pattern of poor judgment"</b> made him an <b>"unreasonable risk"</b> representing Austrade and Australia offshore. <b>No Code of Conduct breach was found and no sanction imposed.</b> Primary (internal) review by COO Melissa Woodburn <b>upheld the decision 15 Jan 2026</b>. Secondary review filed with the MPC <b>6 Mar 2026</b>; supplementary statement <b>27 Apr 2026</b>.<br><br>
+    <b style="color:var(--neg)">Outcome (18 Jun 2026) — ADVERSE:</b> Delegate <b>Brandon Chen</b> issued the secondary-review recommendation report on ROA-26-0097. It is narrow / one-sided — treating the workplace environment, supervisor conduct, Jon's health context and the harm from how the decision was implemented as outside or largely outside MPC review scope. Per s45 Public Service Regulations 2023 Austrade was copied; per s46 Austrade had to confirm, vary or set aside the s25 decision.<br><br>
+    <b style="color:var(--neg)">s46 decision (23 Jun 2026) — CONFIRMED:</b> Mel Michael (Senior Workplace Relations Advisor, Austrade) emailed the MPC (cc Jon) on 23 Jun: the delegate considered the options and, <span class="q">"as this recommendation aligns with the original decision made by Austrade, we accept the recommendation to confirm the decision."</span> Austrade <b>confirmed</b> the s25 cessation — the MPC merits process is now closed on Austrade's side. Jon has asked S&amp;G whether to seek <b>judicial review</b> of that s46 decision (likely outside the Comcare retainer; any ADJR ~28-day / s39B clock runs from 23 Jun — <b>window closes ~21 Jul</b>, so move quickly). CPSU (Daisy Jeffrey) is providing an S&amp;G referral for a JR consultation (26 Jun).<br><br>
+    <b style="color:var(--ink)">What the MPC reviewed:</b> Austrade's <b>s25 decision (23 Dec 2025)</b>, by Chief People Officer Ben Wyers, to cease the Ho Chi Minh City posting early and redeploy Jon to Adelaide — on the basis that a <b>"pattern of poor judgment"</b> made him an <b>"unreasonable risk"</b> representing Austrade and Australia offshore. <b>No Code of Conduct breach was found and no sanction imposed.</b> Primary (internal) review by COO Melissa Woodburn <b>upheld the decision 15 Jan 2026</b>. Secondary review filed with the MPC <b>6 Mar 2026</b>; supplementary statement <b>27 Apr 2026</b>.<br><br>
     <b style="color:var(--ink)">The test:</b> the MPC asks whether early cessation was the <b>correct or preferable, fair and proportionate</b> decision on the evidence — not whether any concern arose. Jon's case is not that nothing happened; it is that discrete, correctable matters could not rationally or proportionately bear the "unreasonable risk" conclusion, and that the process was not a genuine merits review.
   </div>
 </div>
@@ -310,7 +318,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
     <b style="color:var(--ink)">Primary:</b> set aside the 23 Dec 2025 decision; correct HR, mobility and posting records so they don't state or imply "unreasonable risk"; record any maintained concern only as resolved by guidance, correction, warning or training; produce the withheld attachments.<br>
     <b style="color:var(--ink)">Alternative:</b> vary the decision to remove the "unreasonable risk" characterisation and reduce any continuing response to the least-intrusive proportionate measure, with no record that prejudices future posting eligibility or APS progression.
   </div>
-  <div class="note"><b style="color:var(--warn)">Cross-matter pivot (read with the Legal actions tab):</b> the MPC tests whether early cessation was proportionate; Comcare tests SRC Act liability and the s5A "reasonable administrative action" exclusion — <b>same facts, different tests.</b> A finding that the cessation was <b>disproportionate</b> weakens Austrade's "reasonable administrative action" shield in Comcare and supports a Fair Work adverse-action argument. Keep the narratives consistent: don't let an MPC "unfair management" framing be recycled by Comcare against you, and don't conflate the tests.</div>
+  <div class="note"><b style="color:var(--warn)">Cross-matter pivot (read with the Legal actions tab):</b> the MPC tests whether early cessation was proportionate; Comcare tests SRC Act liability and the s5A "reasonable administrative action" exclusion — <b>same facts, different tests.</b> The MPC report came back <b>adverse (18 Jun)</b> and Austrade <b>confirmed the s25 decision under s46 (23 Jun)</b>, so the live risk is that Comcare recycles its "proper management" framing under s5A — the Comcare reconsideration (lodged 17 Jun) must distinguish the MPC's narrow scope. A finding that the cessation was <b>disproportionate</b> (e.g. via judicial review or Fair Work) would instead weaken Austrade's "reasonable administrative action" shield in Comcare. Keep the narratives consistent and don't conflate the tests.</div>
 </div>
 </section>
 
@@ -328,7 +336,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
     <div class="kpi pos"><div class="l">d · Work significantly contributed</div><div class="v" style="font-size:15px">Satisfied</div><div class="s">conceded by Comcare</div></div>
     <div class="kpi neg"><div class="l">e · Exclusion (s5A)</div><div class="v" style="font-size:15px">Applied → declined</div><div class="s">the entire battleground</div></div>
   </div>
-  <div class="note"><b>Why this is a strong posture:</b> Comcare is not saying Jon wasn't unwell or that work wasn't the cause — it <b>conceded both</b>. It only found that the injury flowed from <b>reasonable administrative action taken in a reasonable manner</b> (the 3 Dec inquiry + 23 Dec posting cessation), which the SRC Act carves out. Win the s5A argument and liability follows. Reconsideration deadline <b>extended to 22 Jun 2026</b>; then ART.</div>
+  <div class="note"><b>Why this is a strong posture:</b> Comcare is not saying Jon wasn't unwell or that work wasn't the cause — it <b>conceded both</b>. It only found that the injury flowed from <b>reasonable administrative action taken in a reasonable manner</b> (the 3 Dec inquiry + 23 Dec posting cessation), which the SRC Act carves out. Win the s5A argument and liability follows. Reconsideration <b>lodged 17 Jun 2026</b> by S&amp;G (RFR 40803632.1); Reviewable Decision due <b>~17 Jul</b> (≤30 d, s62); then ART.</div>
 </div>
 
 <div class="section">The s5A battleground</div>
@@ -345,7 +353,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
       </dl>
     </div>
     <div class="act f1" style="margin:0">
-      <div class="hd"><h4>Jon's reconsideration theory</h4><span class="forum">Request lodged · draft 6 Jun 2026</span></div>
+      <div class="hd"><h4>Jon's reconsideration theory</h4><span class="forum">Lodged 17 Jun 2026 · S&amp;G</span></div>
       <dl>
         <dt>Anchor</dt><dd class="fact">Don't reargue the injury — Comcare <b>conceded</b> ailment, incapacity and significant work contribution. The only question is whether the exclusion reaches <b>all</b> the causative factors.</dd>
         <dt>Too narrow</dt><dd class="risk">Comcare collapsed the whole case into two December events and ignored <b>cumulative stressors from July 2024</b> and the <b>January 2026 implementation</b>.</dd>
@@ -436,7 +444,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
     <b style="color:var(--ink)">Alternative:</b> seek further medical clarification (cumulative onset before 3 Dec; whether Jan 2026 aggravated the condition; whether Jon would have been injured absent the two identified acts) and obtain Austrade's WHS/psychosocial-risk records.<br>
     <b style="color:var(--ink)">Then:</b> if the reconsideration affirms the decline, appeal to the <b>ART</b> — Slater &amp; Gordon act on the Comcare matter through to ART (see economics below).
   </div>
-  <div class="note"><b style="color:var(--warn)">Cross-matter pivot:</b> the Comcare exclusion and the MPC case share the same fact — was the early cessation <b>reasonable and proportionate, taken in a reasonable manner?</b> A win on the <b>MPC</b> (disproportionate) or a <b>Fair Work adverse-action</b> finding directly undercuts Comcare's s5A shield. Keep the narratives aligned; don't let an MPC "unfair management" framing be turned around to prove the injury was just distress from administrative action. See the <b>Legal actions</b> tab.</div>
+  <div class="note"><b style="color:var(--warn)">Cross-matter pivot:</b> the Comcare exclusion and the MPC case share the same fact — was the early cessation <b>reasonable and proportionate, taken in a reasonable manner?</b> The MPC outcome was <b>adverse (18 Jun)</b> and Austrade <b>confirmed the s25 decision under s46 (23 Jun)</b>, so guard the Comcare reconsideration against having that "proper management" framing recycled under s5A. A win on a <b>Fair Work adverse-action</b> argument, or a successful judicial review of the s46 decision, directly weakens Comcare's s5A shield. Keep the narratives aligned; don't let the MPC framing be turned around to prove the injury was just distress from administrative action. See the <b>Legal actions</b> tab.</div>
 </div>
 
 <div class="section">Claim economics — runway, NWE &amp; legal cost</div>
@@ -444,11 +452,11 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
 <div class="section">1 · Leave runway — how long until LWOP</div>
 <div class="card">
   <div class="controls" style="margin-bottom:16px">
-    <div class="ctl"><label for="lvStart">Projection start</label><input type="date" id="lvStart" value="2026-06-04"></div>
-    <div class="ctl"><label for="lvPers">Personal leave (days)</label><input type="number" id="lvPers" value="52.68" step="0.01" min="0"></div>
+    <div class="ctl"><label for="lvStart">Projection start</label><input type="date" id="lvStart" value="2026-06-20"></div>
+    <div class="ctl"><label for="lvPers">Personal leave (days)</label><input type="number" id="lvPers" value="32.60" step="0.01" min="0"></div>
     <div class="ctl"><label for="lvLsl">LSL (days)</label><input type="number" id="lvLsl" value="65" step="1" min="0"></div>
     <div class="ctl"><label for="lvLslDate">LSL vests</label><input type="date" id="lvLslDate" value="2026-08-16"></div>
-    <div class="ctl"><label for="lvAnn">Annual leave (days)</label><input type="number" id="lvAnn" value="29.08" step="0.01" min="0"></div>
+    <div class="ctl"><label for="lvAnn">Annual leave (days)</label><input type="number" id="lvAnn" value="30.00" step="0.01" min="0"></div>
     <div class="ctl"><span class="lbl">LSL pay rate</span><div class="seg" id="segHalf"><button type="button" data-v="1" class="on">Full pay</button><button type="button" data-v="2">Half pay</button></div></div>
     <div class="ctl"><span class="lbl">Accrue leave while off</span><div class="seg" id="segAccr"><button type="button" data-v="1" class="on">On (EA)</button><button type="button" data-v="0">Off</button></div></div>
   </div>
@@ -459,7 +467,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
     <div class="kpi neg"><div class="l">LWOP begins</div><div class="v" id="lvLwop" style="font-size:19px"></div><div class="s">no income unless accepted</div></div>
   </div>
   <div id="lvBars" style="margin-top:14px"></div>
-  <div class="note"><b>Now factored:</b> (1) <b>accruals</b> — annual + personal keep accruing while on paid leave (EA cl 37/39, ~40 d/yr combined; "+N" shown on total days); (2) <b>SA public holidays</b> paid, not drawn (King's B'day 8 Jun, Labour Day 5 Oct, Christmas, Boxing/Proclamation, NYD); (3) <b>Dec close-down</b> — 3 paid days between Christmas &amp; New Year, no deduction (EA cl 35(4)). Waterfall: personal → LSL (vests 16 Aug, your 10-yr mark) → annual. Half-pay LSL doubles duration, halves income. Confirm with Pay that leave accrues during paid absence and LSL is re-credited on Comcare acceptance (EA cl 56 auto-re-credits personal/carer's only).</div>
+  <div class="note"><b>Balances confirmed from the HR system as at 20 Jun 2026:</b> Annual <b>30.00 d</b>, Personal <b>32.60 d</b> (both fully available, nil pending). LSL, TOIL, Study and Flex all show 0 in the system — LSL is modelled here at 65 d from its <b>16 Aug 2026</b> vesting (10-yr mark); it reads 0 until then. <b>Now factored:</b> (1) <b>accruals</b> — annual + personal keep accruing while on paid leave (EA cl 37/39, ~40 d/yr combined; "+N" shown on total days); (2) <b>SA public holidays</b> paid, not drawn (King's B'day 8 Jun, Labour Day 5 Oct, Christmas, Boxing/Proclamation, NYD); (3) <b>Dec close-down</b> — 3 paid days between Christmas &amp; New Year, no deduction (EA cl 35(4)). Waterfall: personal → annual → LSL (vests 16 Aug, your 10-yr mark). Half-pay LSL doubles duration, halves income. Confirm with Pay that leave accrues during paid absence and LSL is re-credited on Comcare acceptance (EA cl 56 auto-re-credits personal/carer's only).</div>
 </div>
 
 <div class="section">2 · NWE if Comcare accepts — with vs without posting allowance</div>
@@ -516,17 +524,17 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
 
 <div class="section">4 · Legal representation — Slater &amp; Gordon engaged (Comcare)</div>
 <div class="card">
-  <div class="alert" style="background:rgba(47,125,86,.12);border:1px solid rgba(47,125,86,.3);color:var(--ink);margin-top:0;margin-bottom:16px"><b style="color:var(--pos)">Engaged.</b> Slater &amp; Gordon are now formally acting on the <b>Comcare matter</b> — costs agreement executed via DocuSign <b>9 Jun 2026</b> (matter S+G-ACTIVE · M691979). <b>Wearing Blairs (Donald Blairs) declined</b> — their 4 Jun retainer was not taken up. The <b>MPC review is a separate process</b>: MPC notified of S&amp;G's Comcare representation (12 Jun), and Jon continues to correspond directly on the MPC review.</div>
+  <div class="alert" style="background:rgba(47,125,86,.12);border:1px solid rgba(47,125,86,.3);color:var(--ink);margin-top:0;margin-bottom:16px"><b style="color:var(--pos)">Engaged.</b> Slater &amp; Gordon are now formally acting on the <b>Comcare matter</b> — costs agreement executed via DocuSign <b>9 Jun 2026</b> (matter S+G-ACTIVE · M691979). <b>Wearing Blairs (Donald Blairs) declined</b> — their 4 Jun retainer was not taken up. The <b>MPC review is a separate process</b>: MPC notified of S&amp;G's Comcare representation (12 Jun), and Jon continues to correspond directly on the MPC review. <b style="color:var(--pos)">Reconsideration LODGED 17 Jun 2026</b> by S&amp;G (Connie Iarossi; RFR 40803632.1) — now awaiting the Reviewable Decision (≤30 d, ~17 Jul). S&amp;G's <b>Superannuation team</b> is also now on the TPD enquiry (E-252902) — see the TPD / Super tab.</div>
   <div class="cmp">
     <div class="firm sg">
       <h4>Slater &amp; Gordon — engaged</h4>
       <span class="tag" style="background:rgba(47,125,86,.16);color:var(--pos)">Acting · Comcare matter</span>
       <dl>
-        <dt>Contacts</dt><dd>Connie Iarossi · Claire Humphries (Associate) · Anthony Baker · Comcare dept</dd>
+        <dt>Contacts</dt><dd>Connie Iarossi · Claire Humphries (Associate) · Anthony Baker · Comcare dept · Super/TPD: Sarah Snowden's team (E-252902)</dd>
         <dt>Status</dt><dd><span class="flag good">Signed 9 Jun 2026</span> costs agreement executed (DocuSign); matter active</dd>
         <dt>Fee model</dt><dd><span class="flag good">No Win No Fee</span> $0 professional fees on a loss; cap bites only on lump sums</dd>
         <dt>Disbursements</dt><dd>CPSU terms — <b>S&amp;G fund, repaid from settlement</b> (per amended agreement)</dd>
-        <dt>Reconsideration</dt><dd><span class="flag unk">CONFIRM</span> who lodges the 22 Jun reconsideration — clarify S&amp;G scope vs self-lodge</dd>
+        <dt>Reconsideration</dt><dd><span class="flag good">Lodged 17 Jun</span> by S&amp;G (RFR 40803632.1); Reviewable Decision ≤30 d (~17 Jul)</dd>
       </dl>
     </div>
     <div class="firm wb" style="opacity:.7">
@@ -543,27 +551,86 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
   <div class="kpis" style="margin-top:14px">
     <div class="kpi pos"><div class="l">Representation</div><div class="v" style="font-size:18px">S&amp;G engaged</div><div class="s">Comcare matter · signed 9 Jun</div></div>
     <div class="kpi pp"><div class="l">Cost exposure</div><div class="v" style="font-size:18px">No Win No Fee</div><div class="s">$0 fees on loss; disbursements funded</div></div>
-    <div class="kpi neg"><div class="l">Nearest deadline</div><div class="v" style="font-size:18px">22 Jun 2026</div><div class="s">reconsideration — confirm who lodges</div></div>
-    <div class="kpi warn"><div class="l">MPC review</div><div class="v" style="font-size:18px">Self-managed</div><div class="s">separate; S&amp;G notified to MPC 12 Jun</div></div>
+    <div class="kpi warn"><div class="l">Nearest deadline</div><div class="v" style="font-size:18px">~17 Jul 2026</div><div class="s">Comcare Reviewable Decision → 60-d ART clock</div></div>
+    <div class="kpi neg"><div class="l">MPC review</div><div class="v" style="font-size:18px">s46 CONFIRMED</div><div class="s">adverse 18 Jun; s46 confirmed 23 Jun; JR option w/ S&amp;G</div></div>
   </div>
-  <div class="note"><b>Next action:</b> confirm in writing with S&amp;G (Claire Humphries / Connie Iarossi) <b>who lodges the reconsideration by 22 Jun</b> — S&amp;G on the file, or Jon self-lodging with S&amp;G support — and that Comcare has accepted the deadline extension in writing. The economics in Section 3 apply to the S&amp;G No Win No Fee engagement through the ART stage. Source: Gmail (S&amp;G 14 May–13 Jun; DocuSign completed 9 Jun; WB 28 May–4 Jun) + <code>Legal-Costs-vs-Recovery.md</code>.</div>
+  <div class="note"><b>Next action:</b> (1) RTW / GP-capacity reply <b>DONE 23 Jun</b> — med cert sent to Kim McAlister; all future Austrade correspondence redirected to Candice; (2) get S&amp;G's view on <b>judicial review</b> of Austrade's <b>s46 decision (made 23 Jun — CONFIRMED)</b> + a fixed-fee admin-law referral — the ADJR ~28-day clock from 23 Jun closes <b>~21 Jul</b>; CPSU referral in train (26 Jun); (3) await the Comcare Reviewable Decision (~17 Jul); (4) progress the <b>TPD/Super track</b> (see tab) — S&amp;G super enquiry E-252902 response due ~30 Jul. The economics in Section 3 apply to the S&amp;G No Win No Fee engagement through the ART stage. Source: Gmail (S&amp;G/RFR 17 Jun; MPC report 18 Jun; Austrade s46 acceptance 23 Jun; Candice med-cert email 23 Jun; UniSuper 30 Jun; S&amp;G Super 2 Jul) + <code>Legal-Costs-vs-Recovery.md</code>.</div>
+</div>
+</section>
+
+<section class="tab-panel" id="tab-tpd" role="tabpanel">
+<div class="section">TPD / Superannuation insurance — UniSuper (insurer MetLife)</div>
+<div class="card">
+  <div class="kpis" style="margin-bottom:14px">
+    <div class="kpi pos"><div class="l">TPD cover</div><div class="v" style="font-size:19px">$798,000</div><div class="s">30 units · + account $23,149.57 → total ~$821,150</div></div>
+    <div class="kpi neg"><div class="l">Income Protection</div><div class="v" style="font-size:19px">DECLINED</div><div class="s">no valid IP cover at Jan 2026 (last-worked date)</div></div>
+    <div class="kpi a"><div class="l">S&amp;G Super enquiry</div><div class="v" style="font-size:19px">E-252902</div><div class="s">written to UniSuper 2 Jul · fund reply ~4 wks (~30 Jul)</div></div>
+    <div class="kpi pp"><div class="l">Insurer / timeframe</div><div class="v" style="font-size:19px">MetLife</div><div class="s">determination est. 6–12 mo from application; no formal limit</div></div>
+  </div>
+  <div style="font-size:13.5px;line-height:1.7;color:var(--ink2)">
+    <b style="color:var(--ink)">Where this stands (2 Jul 2026):</b> UniSuper member <b>13822331</b>. Jon lodged an Income Protection claim request and a TPD notification on <b>29 Jun</b>; UniSuper (Claims Assist) replied <b>30 Jun</b>: per the <b>15 May</b> preliminary eligibility questionnaire the last day worked with full regular duties was <b>Jan 2026</b>, and <b>no valid IP cover was held at that date → IP declined</b>. The <b>TPD claim remains open</b> — UniSuper can lodge it with insurer <b>MetLife</b> on request, or it can be lodged online via the member portal.<br><br>
+    In parallel, <b>Candice requested initial TPD advice from S&amp;G (28 Jun</b>, to Claire Humphries + Connie Iarossi<b>)</b>, and S&amp;G's <b>Superannuation team</b> (Sarah Snowden, National Practice Group Leader — Super/TPD; enquiry <b>E-252902</b>) confirmed on <b>2 Jul</b> that they have written to UniSuper to confirm entitlement. The fund's response is expected within <b>~4 weeks</b>; S&amp;G will then advise whether a benefit is available and whether they will act on <b>No Win–No Fee</b>. Jon has forwarded the policy documents (Trust Deed 2021; Group Life Policy 4011 of 1 Jun 2024; Addendum 1 of 25 Sep 2025) and the prior UniSuper correspondence to S&amp;G (2 Jul).
+  </div>
+</div>
+
+<div class="section">Eligibility test &amp; what must be proved</div>
+<div class="card">
+  <div class="grid2">
+    <div class="act f1" style="margin:0">
+      <div class="hd"><h4>UniSuper's stated TPD criteria</h4><span class="forum">Claims email 30 Jun 2026</span></div>
+      <dl>
+        <dt>Certification</dt><dd class="fact">Member must be certified <b>Totally and Permanently Disabled</b>.</dd>
+        <dt>Medical</dt><dd class="fact"><b>Two attending doctors' reports</b> required.</dd>
+        <dt>Work test</dt><dd class="assume">Unable to return to work <b>suitable to training, experience and occupational history</b> (per UniSuper's email — verify the exact definition in GL Policy 4011 + Addendum before relying).</dd>
+        <dt>Lodgement</dt><dd>Online via member portal, or UniSuper lodges with MetLife on request.</dd>
+      </dl>
+    </div>
+    <div class="act f2" style="margin:0">
+      <div class="hd"><h4>Evidence already in hand</h4><span class="forum">from the Comcare file</span></div>
+      <dl>
+        <dt>Doctors</dt><dd class="fact">Candidate report authors: Dr Srivastava (treating GP) and Dr de Seixas (psychiatrist) — both already on record.</dd>
+        <dt>Employer IME</dt><dd class="fact">Dr Gutkin (Austrade's own IME, 23 Apr) confirms MDD + functional incapacity — corroborates severity.</dd>
+        <dt>Baseline</dt><dd class="fact">Dr Muffett (Sonic HealthPlus): clean baseline 20 May 2024 → not fit to work 24 Feb 2026.</dd>
+        <dt>Caution</dt><dd class="risk">TPD needs <b>permanence</b> — a higher bar than the Comcare incapacity certificates. Reports must address the permanence and "unlikely ever to do suitable work" limbs specifically, in the policy's words.</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<div class="section">Document &amp; action checklist</div>
+<div class="card">
+  <div class="mtx-wrap">
+  <table class="mtx">
+    <thead><tr><th style="width:28%">Item</th><th style="width:52%">Detail</th><th style="width:20%">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="it">S&amp;G → UniSuper enquiry</td><td>E-252902 — entitlement confirmation; then S&amp;G No Win–No Fee decision.</td><td><span class="flag good">Sent 2 Jul ✓</span></td></tr>
+      <tr><td class="it">Policy documents</td><td>Trust Deed 2021 · GL Policy 4011 (1 Jun 2024) · Addendum 1 (25 Sep 2025) — obtained and forwarded to S&amp;G.</td><td><span class="flag good">Held ✓</span></td></tr>
+      <tr class="key"><td class="it">Two doctors' reports (TPD)</td><td>Srivastava + de Seixas, addressing permanence and inability to do suitable work in policy terms. Hold drafting until S&amp;G advises on forms/wording.</td><td><span class="flag unk">Pending</span></td></tr>
+      <tr class="key"><td class="it">Date of disablement</td><td>UniSuper is working from "last worked Jan 2026" (15 May questionnaire). Confirm the date MetLife will actually use — it drives cover validity, unit values and which policy version applies.</td><td><span class="flag unk">Confirm</span></td></tr>
+      <tr class="key"><td class="it">IP decline — verify basis</td><td>Why was no valid IP cover held at Jan 2026? Check insurance/contribution history and the "Your insurance application — Office Use" email. If cover lapsed through employer or fund error, challenge the decline.</td><td><span class="flag unk">Investigate</span></td></tr>
+      <tr><td class="it">Authority for Candice</td><td>Jon asked UniSuper (29 Jun) what authority form lets Candice handle communications; not yet answered.</td><td><span class="flag unk">Chase</span></td></tr>
+      <tr><td class="it">Candice's own UniSuper matter</td><td>Separate "Lin" claim-enquiry thread forwarded to S&amp;G 2 Jul — keep as a distinct file; don't mix with Jon's claim.</td><td><span class="flag unk">Track</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note"><b>Cross-matter cautions:</b> (1) <b>Narrative consistency</b> — a TPD claim asserts permanent incapacity for suitable work, while Comcare RTW correspondence and any judicial-review material must not assert imminent RTW capability. Route all three through S&amp;G so nothing said in one forum is weaponised in another. (2) A TPD lump sum is generally <b>not</b> offset against Comcare weekly compensation, but confirm the interaction, tax treatment and super-release consequences with S&amp;G <b>before</b> lodging. (3) <b>Don't lodge prematurely</b> — S&amp;G's fund enquiry (~4 wks) will confirm cover and definitions first; lodging with thin permanence evidence risks a decline that is hard to unwind, and the fund has <b>no formal decision deadline</b> (6–12 months typical). (4) UniSuper claims: 1800 825 246 · claims@unisuper.com.au; S&amp;G Super team: 1800 840 932.</div>
 </div>
 </section>
 
 <section class="tab-panel" id="tab-timeline" role="tabpanel">
 <div class="section">Case timeline — single source of truth (both matters)</div>
 <div class="card">
-  <div class="tlhead" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
     <div id="tlFilter" style="display:flex;flex-wrap:wrap;gap:8px"></div>
     <div class="seg" id="segView" style="max-width:200px"><button type="button" data-v="list" class="on">List</button><button type="button" data-v="table">Table</button></div>
   </div>
   <div id="timeline"></div>
   <div style="border:1px dashed var(--line2);border-radius:var(--r);padding:14px 16px;margin-top:16px">
     <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink2);margin-bottom:10px">+ Add an event</div>
-    <div class="addgrid" style="display:grid;grid-template-columns:140px 1fr 150px 160px auto;gap:10px;align-items:end">
+    <div style="display:grid;grid-template-columns:140px 1fr 150px 160px auto;gap:10px;align-items:end">
       <div class="ctl"><label for="addDate">Date</label><input type="date" id="addDate"></div>
       <div class="ctl"><label for="addTitle">Event</label><input type="text" id="addTitle" placeholder="what happened"></div>
-      <div class="ctl"><label for="addCat">Category</label><select id="addCat"><option value="emp">Employment</option><option value="med">Medical</option><option value="com">Comcare</option><option value="leg">Legal</option><option value="lv">Leave/Pay</option><option value="dl">Deadline</option><option value="priv">Privacy/FW</option></select></div>
+      <div class="ctl"><label for="addCat">Category</label><select id="addCat"><option value="emp">Employment</option><option value="med">Medical</option><option value="com">Comcare</option><option value="leg">Legal</option><option value="lv">Leave/Pay</option><option value="dl">Deadline</option><option value="priv">Privacy/FW</option><option value="tpd">TPD/Super</option></select></div>
       <div class="ctl"><label for="addSrc">Source</label><input type="text" id="addSrc" placeholder="email / letter / note"></div>
       <button type="button" id="addBtn" style="padding:9px 16px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:13px;cursor:pointer">Add</button>
     </div>
@@ -576,12 +643,12 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
 <section class="tab-panel" id="tab-actions" role="tabpanel">
 <div class="section">Legal actions — multi-front tracker</div>
 <div class="card" style="margin-bottom:16px">
-  <div class="alert" style="background:rgba(154,107,0,.12);border:1px solid rgba(154,107,0,.32);color:var(--ink);margin-top:0;margin-bottom:14px"><b style="color:var(--warn)">Decision aid, not legal advice.</b> Four possible fronts arising from the same conduct by Austrade. Facts, assumptions, risks and the next action are separated in each card. Confirm everything with your lawyer before lodging anything.</div>
+  <div class="alert" style="background:rgba(154,107,0,.12);border:1px solid rgba(154,107,0,.32);color:var(--ink);margin-top:0;margin-bottom:14px"><b style="color:var(--warn)">Decision aid, not legal advice.</b> Four possible fronts arising from the same conduct by Austrade, plus the separate TPD/Super insurance track (own tab). Facts, assumptions, risks and the next action are separated in each card. Confirm everything with your lawyer before lodging anything.</div>
   <div class="kpis">
-    <div class="kpi neg"><div class="l">Nearest hard deadline</div><div class="v" style="font-size:18px">22 Jun 2026</div><div class="s">Comcare reconsideration</div></div>
-    <div class="kpi a"><div class="l">Fair Work window</div><div class="v" style="font-size:18px">No 21-day trap</div><div class="s">non-dismissal · s372 · ~6 yr</div></div>
+    <div class="kpi neg"><div class="l">Nearest hard deadline</div><div class="v" style="font-size:18px">~17 Jul 2026</div><div class="s">Comcare Reviewable Decision (≤30 d)</div></div>
+    <div class="kpi warn"><div class="l">JR window (s46)</div><div class="v" style="font-size:18px">Closes ~21 Jul</div><div class="s">ADJR ~28 d from s46 decision 23 Jun</div></div>
     <div class="kpi pp"><div class="l">OAIC window</div><div class="v" style="font-size:18px">~12 months</div><div class="s">act within 12 mo of conduct</div></div>
-    <div class="kpi warn"><div class="l">Live fronts</div><div class="v" style="font-size:18px">1 live · 3 optional</div><div class="s">Comcare live; rest to decide</div></div>
+    <div class="kpi a"><div class="l">Live fronts</div><div class="v" style="font-size:18px">2 live · 3 optional</div><div class="s">Comcare + TPD/Super live; rest to decide</div></div>
   </div>
   <div class="legend">
     <span><i style="background:var(--pos)"></i>Fact / verified</span>
@@ -595,18 +662,42 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
 <div class="card" style="margin-bottom:16px">
   <div class="mtx-wrap">
   <table class="mtx">
-    <thead><tr><th style="width:24%">Action / right</th><th style="width:20%">Limitation period</th><th style="width:23%">Key date (as at 14 Jun 2026)</th><th style="width:33%">Basis &amp; note</th></tr></thead>
+    <thead><tr><th style="width:24%">Action / right</th><th style="width:20%">Limitation period</th><th style="width:23%">Key date (as at 2 Jul 2026)</th><th style="width:33%">Basis &amp; note</th></tr></thead>
     <tbody>
       <tr class="key">
         <td class="it">Comcare reconsideration request</td>
         <td>30 days from determination (extension granted)</td>
-        <td><b style="color:var(--neg)">Due 22 Jun 2026 · 8 days</b></td>
-        <td>SRC Act s62. Original 6 Jun; Comcare extended to 22 Jun. Miss it → 7 May decline stands.</td>
+        <td><b style="color:var(--pos)">LODGED 17 Jun 2026 ✓</b></td>
+        <td>SRC Act s62. Original 6 Jun; extended to 22 Jun; S&amp;G lodged early 17 Jun (RFR 40803632.1). Reviewable Decision ≤30 d (~17 Jul).</td>
+      </tr>
+      <tr>
+        <td class="it">Austrade RTW / GP-capacity reply</td>
+        <td>Requested by 23 Jun 2026</td>
+        <td><b style="color:var(--pos)">DONE 23 Jun 2026 ✓</b></td>
+        <td>Med cert sent to Kim McAlister 23 Jun (by Candice); all future Austrade correspondence redirected to Candice.</td>
+      </tr>
+      <tr class="key">
+        <td class="it">Austrade s46 decision (MPC)</td>
+        <td>Was due to MPC COB 25 Jun 2026</td>
+        <td><b style="color:var(--neg)">MADE 23 Jun 2026 — CONFIRMED</b></td>
+        <td>PS Regs 2023 s46 — Austrade accepted the adverse MPC recommendation (18 Jun) and <b>confirmed</b> the s25 cessation (Mel Michael → MPC, cc Jon, 23 Jun). A JR clock runs from this decision.</td>
+      </tr>
+      <tr class="key">
+        <td class="it">Judicial review of s46 decision</td>
+        <td>ADJR ~28 days / s39B reasonable time</td>
+        <td><b style="color:var(--warn)">Closes ~21 Jul (ADJR ~28 d)</b></td>
+        <td>s46 decision issued 23 Jun — JR window open, ~19 days left as at 2 Jul. Option with S&amp;G; CPSU referral in train (26 Jun); likely outside the Comcare retainer; needs fixed-fee admin-law prospects advice. <b>Move now.</b></td>
+      </tr>
+      <tr>
+        <td class="it">UniSuper TPD claim / S&amp;G enquiry</td>
+        <td>No formal limit; fund determination 6–12 mo</td>
+        <td><b style="color:var(--a)">UniSuper reply to S&amp;G due ~30 Jul</b></td>
+        <td>S&amp;G Superannuation enquiry E-252902 sent 2 Jul (~4-wk fund response). TPD claim open (MetLife); IP declined — verify basis. See TPD / Super tab.</td>
       </tr>
       <tr class="key">
         <td class="it">ART review application</td>
         <td>60 days from receiving reviewable decision</td>
-        <td>Clock starts when reconsideration outcome received (not yet issued)</td>
+        <td>Clock starts when reconsideration outcome received (~17 Jul)</td>
         <td>SRC Act s64. ART replaced the AAT 14 Oct 2024. Extension can be sought. S&amp;G act at this stage.</td>
       </tr>
       <tr>
@@ -630,7 +721,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
     </tbody>
   </table>
   </div>
-  <div class="note"><b>Nearest hard clock:</b> Comcare reconsideration <b>22 Jun 2026</b> (8 days). The ART 60-day clock only starts once the reconsideration decision is received — so lodging the reconsideration in time also protects the ART pathway. <b>Confirm every limitation period with S&amp;G</b> before relying: ART transitional rules (post-14 Oct 2024 AAT→ART merger) and any SRC Act election should be verified. Sources: Comcare scheme guidance, SRC Act ss 62 &amp; 64; ART workers-compensation review.</div>
+  <div class="note"><b>Nearest hard clock:</b> the <b>judicial-review window (ADJR ~28 days) closes ~21 Jul</b> — ~19 days left as at 2 Jul; decide fast with S&amp;G (CPSU referral in train). The Comcare Reviewable Decision (~17 Jul) starts the 60-day ART clock. The S&amp;G super enquiry response is due ~30 Jul. <b>Confirm every limitation period with S&amp;G</b> before relying: ART transitional rules (post-14 Oct 2024 AAT→ART merger), the precise JR clock, and any SRC Act election should be verified. Sources: Comcare scheme guidance, SRC Act ss 62 &amp; 64; ART workers-compensation review.</div>
 </div>
 
 <div class="act f1">
@@ -671,18 +762,18 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
 <div class="act f4">
   <div class="hd"><h4>4 · Comcare claim (live)</h4><span class="forum">Forum: reconsideration → ART</span></div>
   <dl>
-    <dt>Status</dt><dd class="fact"><b>Denied 7 May 2026</b> on the s5A "reasonable administrative action" exclusion. Reconsideration deadline <b>extended to 22 Jun 2026</b>. <b>Slater &amp; Gordon engaged</b> on the matter (9 Jun); Wearing Blairs declined.</dd>
+    <dt>Status</dt><dd class="fact"><b>Denied 7 May 2026</b> on the s5A "reasonable administrative action" exclusion. Reconsideration <b>LODGED 17 Jun 2026</b> by S&amp;G (RFR 40803632.1); Reviewable Decision due <b>~17 Jul</b> (≤30 d). <b>Slater &amp; Gordon engaged</b> (9 Jun); Wearing Blairs declined.</dd>
     <dt>Basis</dt><dd>SRC Act 1988 liability for the psychological injury; the fight is whether the injury flowed from the <b>manner</b> of the action rather than reasonable administrative action.</dd>
-    <dt>Cross-link</dt><dd>Economics, fees and the representation status are on the <b>Comcare claim</b> tab. A win on Front 3 (adverse action) or the MPC weakens the s5A shield here.</dd>
-    <dt>Risk</dt><dd class="risk">Hard deadline. If the reconsideration is not lodged by 22 Jun, the live claim stalls.</dd>
-    <dt>Next action</dt><dd class="next">Confirm Comcare accepted the extension in writing; confirm with S&amp;G who lodges the reconsideration by 22 Jun; S&amp;G act through to ART.</dd>
+    <dt>Cross-link</dt><dd>Economics, fees and the representation status are on the <b>Comcare claim</b> tab. A win on Front 3 (adverse action) or a successful JR of the s46 decision weakens the s5A shield here; the adverse MPC report (18 Jun) + Austrade's s46 confirmation (23 Jun) cut the other way and must be distinguished. The <b>TPD/Super track</b> (own tab) is independent of Austrade but shares the medical evidence — keep incapacity narratives consistent.</dd>
+    <dt>Risk</dt><dd class="risk">Reconsideration now lodged. Live risk: the <b>adverse MPC report (18 Jun)</b> and Austrade's <b>s46 confirmation (23 Jun)</b> frame the cessation as proper management — Comcare may recycle it under s5A. The Reviewable Decision must distinguish the MPC's narrow scope.</dd>
+    <dt>Next action</dt><dd class="next">Await the Reviewable Decision (~17 Jul); ensure S&amp;G's submissions distinguish the adverse MPC report's narrow scope; S&amp;G act through to ART.</dd>
   </dl>
 </div>
 
 <div class="card" style="margin-top:16px">
   <div style="font-size:13.5px;line-height:1.7;color:var(--ink2)">
     <b style="color:var(--ink)">How the fronts interact (read before opening any):</b> the four matters share one set of facts, so they reinforce — or undercut — each other.<br><br>
-    A finding that the early cessation was <b>disproportionate</b> (MPC) or <b>adverse action for a workplace right</b> (Fair Work) directly weakens Austrade's <b>"reasonable administrative action"</b> defence in Comcare — the single pivot across every front. The privacy complaints (Fronts 1–2) run on a separate track and carry little narrative risk, but the same incidents should be described <b>consistently</b> everywhere. <b>Sequence and wording should be set with your lawyer</b> so a concession in one forum is not weaponised in another.
+    A finding that the early cessation was <b>disproportimate</b> (via judicial review of the s46 decision) or <b>adverse action for a workplace right</b> (Fair Work) directly weakens Austrade's <b>"reasonable administrative action"</b> defence in Comcare — the single pivot across every front. <b>The MPC came back adverse (18 Jun) and Austrade confirmed under s46 (23 Jun)</b>, so for now the pivot cuts against Jon and must be contained, not relied on. The privacy complaints (Fronts 1–2) run on a separate track and carry little narrative risk, but the same incidents should be described <b>consistently</b> everywhere. The <b>TPD/Super claim</b> is against the fund/insurer, not Austrade — low narrative risk, but its permanence assertions must not contradict any RTW positions elsewhere. <b>Sequence and wording should be set with your lawyer</b> so a concession in one forum is not weaponised in another.
   </div>
   <div class="note"><b>Verified facts in this tab:</b> Fair Work non-dismissal time limits (no 21-day trap; s372; ~6-yr civil-remedy limitation; Federal Court / FCFCOA); the Privacy Act employee-records exemption applies to <b>private-sector organisations only</b>, so it does not shield Austrade as a Commonwealth <b>agency</b>; OAIC complaints are free, go to the agency first, and may be declined if conduct is &gt;12 months old. Confirm application to your specific facts with a privacy/employment lawyer.</div>
 </div>
@@ -699,7 +790,7 @@ tfoot td{font-weight:700;border-top:2px solid var(--line2)}
   </div>
 </div>
 
-<div class="foot">Sources: MPC secondary-review pack (6 Mar + 27 Apr 2026 statements; Austrade 3 Dec inquiry, 23 Dec cessation, 15 Jan review; CEI 5; witness statements) · Austrade pay advices 18 Dec 2025–4 Jun 2026 · SRC Act 1988 ss 5A,8,19,20 · Privacy Act 1988 ss 6,7B,41 (APPs) · Fair Work Act 2009 ss 340,341,366,372 · LSL (Cth Employees) Act 1976 · S&amp;G Conditional Costs Agreement (executed 9 Jun 2026) · WB retainer terms (4 Jun 2026, declined) · MPC review ROA-26-0097 · indicative only — confirm all characterisations and limitation periods with your lawyer.</div>
+<div class="foot">Sources: MPC secondary-review report 18 Jun 2026 (ROA-26-0097, Delegate B. Chen) + secondary-review pack (6 Mar + 27 Apr 2026 statements; Austrade 3 Dec inquiry, 23 Dec cessation, 15 Jan review; CEI 5; witness statements) · Austrade s46 decision 23 Jun 2026 (M. Michael — CONFIRMED) · Comcare RFR 40803632.1 lodged 17 Jun 2026 (S&amp;G) · Candice med-cert email to K. McAlister 23 Jun 2026 · Austrade pay advices 18 Dec 2025–4 Jun 2026 · UniSuper Claims email 30 Jun 2026 (IP declined; TPD open; MetLife) · S&amp;G Superannuation enquiry E-252902 (2 Jul 2026, S. Snowden) · UniSuper Trust Deed 2021, GL Policy 4011 (1 Jun 2024) + Addendum 1 (25 Sep 2025) · SRC Act 1988 ss 5A,8,19,20,62,64 · Privacy Act 1988 ss 6,7B,41 (APPs) · Fair Work Act 2009 ss 340,341,366,372 · PS Regs 2023 ss 45,46 · LSL (Cth Employees) Act 1976 · S&amp;G Conditional Costs Agreement (executed 9 Jun 2026) · WB retainer terms (4 Jun 2026, declined) · indicative only — confirm all characterisations and limitation periods with your lawyer.</div>
 </div>
 
 <script>
@@ -730,8 +821,8 @@ function leave(){
       if(accr){p+=ACC;a+=ACC;accrued+=2*ACC;}
       if(isCD(d)){}
       else if(p>0){p-=1;if(p<=0&&!endP)endP=new Date(d);}
-      else if(d>=lslVest&&l>0){l-=1/half;if(l<=0&&!endL)endL=new Date(d);}
       else if(a>0){a-=1;if(a<=0&&!endA)endA=new Date(d);}
+      else if(d>=lslVest&&l>0){l-=1/half;if(l<=0&&!endL)endL=new Date(d);}
     }
     days++; d.setDate(d.getDate()+1);
   }
@@ -742,7 +833,7 @@ function leave(){
   el('lvCliffSub').textContent="last paid day";
   el('lvWeeks').textContent=wkRun+" wks";
   el('lvLwop').textContent=fmt(cliff);
-  const buckets=[["Personal",pers,'p',endP],["Long service"+(half==2?" (½ pay)":""),lsl*(half==2?2:1)/1,'l',endL],["Annual",ann,'an',endA]];
+  const buckets=[["Personal",pers,'p',endP],["Annual",ann,'an',endA],["Long service"+(half==2?" (½ pay)":""),lsl*(half==2?2:1)/1,'l',endL]];
   const maxd=Math.max(pers,lsl*(half),ann,1);
   el('lvBars').innerHTML=buckets.map(b=>{
     const w=Math.max(3,Math.min(100,(b[1]/ (pers+lsl*(half)+ann))*100));
@@ -797,7 +888,7 @@ function cost(totA,totB){
   el('cBars').innerHTML=bars.map(b=>`<div class="barrow"><span class="nm">${b[0]}</span><div class="bar"><div class="fill ${b[2]==='a'?'p':b[2]==='b'?'an':b[2]==='l'?'l':'p'}" style="width:${Math.max(2,Math.min(100,b[1]/max*100))}%;background:${b[2]==='a'?'var(--a)':b[2]==='b'?'var(--b)':b[2]==='an'?'var(--neg)':'var(--pos)'}"></div></div><span class="dt">${f0(b[1])}</span></div>`).join('');
 }
 
-const CATS={emp:["Employment","var(--a)"],med:["Medical","var(--pos)"],com:["Comcare","var(--b)"],leg:["Legal","var(--purple)"],lv:["Leave/Pay","var(--warn)"],dl:["Deadline","var(--neg)"],priv:["Privacy/FW","var(--purple)"]};
+const CATS={emp:["Employment","var(--a)"],med:["Medical","var(--pos)"],com:["Comcare","var(--b)"],leg:["Legal","var(--purple)"],lv:["Leave/Pay","var(--warn)"],dl:["Deadline","var(--neg)"],priv:["Privacy/FW","var(--purple)"],tpd:["TPD/Super","var(--pos)"]};
 const EVENTS=[
 ["2016-08-15","emp","Commenced employment with Austrade","S&G letter"],
 ["2024-07-01","emp","Began 3-yr Vietnam posting (Trade Commissioner, HCMC) — due to end 1 Jul 2027","S&G"],
@@ -827,6 +918,7 @@ const EVENTS=[
 ["2026-04-27","leg","MPC supplementary statement filed","MPC pack"],
 ["2026-05-07","com","Comcare DENIED liability — 'reasonable administrative action' (s5A)","Determination"],
 ["2026-05-11","leg","Short brief prepared; legal enquiries begin","Drive"],
+["2026-05-15","tpd","UniSuper preliminary eligibility questionnaire submitted (last worked Jan 2026)","UniSuper email 30 Jun"],
 ["2026-05-19","leg","Lawyer consults (Cameron Hall, KH, Lander & Co)","Gmail"],
 ["2026-05-21","dl","Comcare confirms reconsideration deadline = 6 Jun 2026","Gmail"],
 ["2026-05-27","med","Austrade call during certified leave → panic attack; new cert sent","Gmail"],
@@ -837,15 +929,29 @@ const EVENTS=[
 ["2026-06-04","leg","Wearing Blairs retainer terms sent — offered to draft + file reconsideration","Gmail"],
 ["2026-06-09","leg","S&G costs agreement executed (DocuSign) — S&G engaged for Comcare; Wearing Blairs retainer not taken up","DocuSign/Gmail"],
 ["2026-06-12","leg","Informed MPC (Brandon) that S&G now represent the Comcare matter","Gmail"],
+["2026-06-16","emp","Austrade (Kim McAlister) responds re 27 May call; flags RTW role identified","Gmail"],
+["2026-06-17","com","Comcare reconsideration LODGED by S&G (RFR 40803632.1)","S&G/Gmail"],
+["2026-06-17","emp","Austrade (Kim McAlister) RTW + updated GP-capacity request (reply due 23 Jun)","Gmail"],
+["2026-06-18","com","MPC secondary review report ISSUED — ADVERSE (Delegate B. Chen, ROA-26-0097)","Gmail/MPC"],
+["2026-06-18","leg","Jon asks S&G re judicial review of forthcoming Austrade s46 decision + admin-law referral","Gmail"],
+["2026-06-23","emp","Austrade s46 decision MADE — CONFIRMED s25 cessation (M. Michael accepts MPC rec; emails MPC, cc Jon)","Gmail/MPC s46"],
+["2026-06-23","emp","Med cert sent to Austrade (K. McAlister) by Candice — RTW reply done; correspondence redirected to Candice","Gmail"],
+["2026-06-26","leg","CPSU (D. Jeffrey) to provide S&G referral for judicial-review consultation","Gmail"],
+["2026-06-28","tpd","Candice requests initial TPD advice from S&G (Claire Humphries + Connie Iarossi)","Gmail"],
+["2026-06-29","tpd","Jon lodges IP claim request + TPD notification with UniSuper (member 13822331)","Gmail"],
+["2026-06-30","tpd","UniSuper: no valid IP cover at Jan 2026 — IP DECLINED; TPD claim open (MetLife; certification + 2 doctors' reports)","Gmail"],
+["2026-07-02","tpd","S&G Superannuation team (E-252902): written to UniSuper, reply ~4 wks; Jon forwards policy docs + prior UniSuper emails","Gmail"],
 ["2026-06-06","dl","Original reconsideration deadline","Comcare"],
-["2026-06-22","dl","Comcare reconsideration deadline extended to 22 June 2026","Gmail"],
-["2026-06-30","dl","MPC review target completion","MPC"],
-["2026-07-22","dl","MPC formal due date","MPC"],
+["2026-06-22","dl","Extended reconsideration deadline (met early — lodged 17 Jun)","Gmail"],
+["2026-06-23","dl","Reply due to Austrade re RTW / updated GP capacity advice — DONE 23 Jun","Gmail"],
+["2026-07-17","dl","Comcare Reviewable Decision expected (~30 d from 17 Jun lodgement)","SRC Act s62(6)"],
+["2026-07-21","dl","ADJR ~28-day JR window on s46 decision closes (approx — confirm with S&G)","calc from 23 Jun"],
+["2026-07-30","dl","UniSuper response to S&G super enquiry expected (~4 wks from 2 Jul)","S&G email 2 Jul"],
 ["2026-08-16","dl","Long service leave vests (10 years' service)","LSL Act"],
 ["2027-07-01","dl","Posting term would have ended (allowance cap)","Contract"]
 ];
 let tlFilter=new Set(Object.keys(CATS));
-const TODAY=new Date('2026-06-14');
+const TODAY=new Date('2026-07-02');
 let userEvents=[];
 let tlView='list';
 function renderTL(){
@@ -904,10 +1010,9 @@ function loadState(){try{const s=JSON.parse(localStorage.getItem(LSKEY));if(!s)r
 }catch(e){}}
 function daysTo(iso){return Math.round((new Date(iso)-TODAY)/864e5);}
 function mpc(){
-  const dc=daysTo('2026-06-22'), dm=daysTo('2026-07-22');
-  el('mDeadline').textContent='22 Jun 2026';
-  el('mDeadlineSub').textContent=dc>0?`${dc} days left — lodge now`:(dc===0?'TODAY':`${-dc} days overdue`);
-  el('mDueSub').textContent=dm>0?`${dm} days away`:'passed';
+  el('mDeadline').textContent='Lodged 17 Jun 2026';
+  el('mDeadlineSub').textContent='Reviewable Decision due ~17 Jul (≤30 d)';
+  el('mDueSub').textContent='accepted MPC rec — s25 cessation upheld';
 }
 function setTab(t){
   activeTab=t;
